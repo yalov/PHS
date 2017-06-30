@@ -1,0 +1,15 @@
+{
+  "NAME": "TRP-Hire",
+  "URL": "http://ksp-avc.cybutek.net/version.php?id=498",
+  "VERSION": {
+    "MAJOR": 0,
+    "MINOR": 1,
+    "PATCH": 0,
+    "BUILD": 0
+  },
+  "KSP_VERSION": {
+    "MAJOR": 1,
+    "MINOR": 3,
+    "PATCH": 0
+  }
+}
