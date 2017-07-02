@@ -36,7 +36,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="CustomAstronautComplexUISpawner.cs" />
+    <Compile Include="CustomAstronautComplexUI.cs" />
     <Compile Include="Hire.cs" />
+    <Compile Include="KSI_EditACPrefabs.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

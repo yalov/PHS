@@ -10,6 +10,6 @@ copy /Y "%1%2" "GameData\%GAMEDIR%"
 copy /Y %GAMEDIR%.version GameData\%GAMEDIR%
 
 mkdir "%H%\GameData\%GAMEDIR%"
-xcopy /y /s GameData\TRP-Hire "%H%\GameData\%GAMEDIR%"
+xcopy /y /s GameData\%GAMEDIR% "%H%\GameData\%GAMEDIR%"
 
 pause
