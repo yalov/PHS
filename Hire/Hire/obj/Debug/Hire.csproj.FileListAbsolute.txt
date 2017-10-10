@@ -19,10 +19,8 @@ D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\Hire.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\Hire.pdb
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\Assembly-CSharp-firstpass.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\Assembly-CSharp.dll
-D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\System.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\UnityEngine.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\UnityEngine.UI.dll
-D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\TrackIRUnity.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\System.Xml.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\KSPAssets.dll
 D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\Mono.Cecil.dll
@@ -32,3 +30,5 @@ D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\UnityEngine.xml
 D:\Users\jbb\github\PHS\Hire\Hire\obj\Debug\Hire.csprojResolveAssemblyReference.cache
 D:\Users\jbb\github\PHS\Hire\Hire\obj\Debug\Hire.dll
 D:\Users\jbb\github\PHS\Hire\Hire\obj\Debug\Hire.pdb
+D:\Users\jbb\github\PHS\Hire\Hire\bin\Debug\KSPTrackIR.dll
+D:\Users\jbb\github\PHS\Hire\Hire\obj\Debug\Hire.csproj.CoreCompileInputs.cache

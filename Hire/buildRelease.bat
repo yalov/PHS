@@ -1,7 +1,6 @@
 
-rem @echo off
+@echo off
 
-set H=R:\KSP_1.3.0_dev
 set GAMEDIR=TRP-Hire
 set LICENSE=TRP-License.txt
 rem set README=ReadMe.txt
