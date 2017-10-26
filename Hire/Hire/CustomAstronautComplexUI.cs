@@ -27,6 +27,10 @@ namespace Hire
         private static float KStupidity = 50;
         private static float KCourage = 50;
         private static bool KFearless = false;
+        private static bool KStockCost = false;
+        private static float KDiscount = 0;
+        private static bool KBlackMunday = false;
+        private static bool KNewYear = false;
         private static int KCareer = 0;
         private string[] KCareerStrings = { "Pilot", "Scientist", "Engineer" };
         private static int KLevel = 0;
@@ -35,7 +39,7 @@ namespace Hire
         private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
         private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
         private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
-        private static int KGender = 0;
+        private static int KGender = 2;  // default Random 
         private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
         private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
         private GUIContent KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
@@ -163,22 +167,96 @@ namespace Hire
         private int costMath()
         {
             dCheck();
-            float fearcost = 0;
-            float basecost = 25000;
-            float couragecost = (50 - KCourage) * 150;
-            float stupidcost = (KStupidity - 50) * 150;
-            float diffcost = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
+
+            // Params for config
+            float const_cost = 25000F;
+            float b = 0.5F;         // cost quality coef of bad    kerbal (KStupidity = 100, KCourage = 0  )
+            float n = 1F;           // cost quality coef of normal kerbal (KStupidity = 50,  KCourage = 50 )
+            float g = 2F;           // cost quality coef of good   kerbal (KStupidity = 0,   KCourage = 100)
+            float fearless_coef = 2F;           // badass gets x2
+            float gender_coef = 1.25F;          // pay for choosing gender
+
+            float bulk_discount1 = 0.15F;       // >= 5 kerbals
+            float bulk_discount2 = 0.30F;       // = 10 kerbals
+            float black_discount = 0.10F;
+            float new_year_discount = 0.50F;
+
+            float basecost;
+            if (KStockCost)
+                basecost = GameVariables.Instance.GetRecruitHireCost(HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount());
+            else
+                basecost = const_cost; 
+
+            float kerbal_quality = (100 - KStupidity + KCourage) / 200;
+            float quality_coef;
+
+            if (kerbal_quality < 0.5)
+                quality_coef = 2 * (n - b) * kerbal_quality + b;
+            else
+                quality_coef = 2 * (g - n) * kerbal_quality - g + 2 * n;
+
+            double cost = basecost * quality_coef;
+
             if (KFearless == true)
+                cost *= fearless_coef;                    
+
+            if (KGender != 2)
+                cost *= gender_coef;                
+
+            DCost = 1 + (KDead * 0.1f); 
+            float difficulty_setting_coef = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
+
+            cost *= DCost * difficulty_setting_coef * KBulki * (KLevel + 1);
+
+            KDiscount = 0;
+            KBlackMunday = false;
+            KNewYear = false;
+
+            //  discounts for bulk purchases
+            if (KBulki >= 10)   
+                KDiscount += bulk_discount2;
+            else if (KBulki >= 5)
+                KDiscount += bulk_discount1;
+
+            //  discounts: BlackMunday is day of eclipse, NewYear is last days of year
+            if (Planetarium.fetch != null)
             {
-                fearcost += 10000;
+                double seconds = Planetarium.GetUniversalTime();
+                double eclipse_interval = 141115.4;
+                double first_eclipse = 103000;
+                int sec_of_year = (int)seconds % KSPUtil.dateTimeFormatter.Year;
+                int day_of_year = sec_of_year / KSPUtil.dateTimeFormatter.Day + 1;
+                
+                double pass_simce_eclipse = (seconds - first_eclipse + eclipse_interval) % eclipse_interval;
+                double before_eclipse = eclipse_interval - pass_simce_eclipse;
+
+                double seconds_nearest_eclipse;
+
+                if (pass_simce_eclipse < before_eclipse)
+                    seconds_nearest_eclipse = seconds - pass_simce_eclipse;
+                else
+                    seconds_nearest_eclipse = seconds + before_eclipse;
+
+                int eclipse_sec_of_year = (int)seconds_nearest_eclipse % KSPUtil.dateTimeFormatter.Year;
+                int eclipse_day_of_year = eclipse_sec_of_year / KSPUtil.dateTimeFormatter.Day + 1;
+
+                if (day_of_year  == eclipse_day_of_year)
+                {
+                    KBlackMunday = true;
+                    KDiscount += black_discount;
+                }
+      
+                int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
+                if (days_in_year - day_of_year < 3)
+                {
+                    KNewYear = true;
+                    KDiscount += new_year_discount;
+                }
             }
-            DCost = 1 + (KDead * 0.1f);
 
+            cost *= 1 - KDiscount;
 
-            double currentcost = (basecost - couragecost - stupidcost + fearcost) * (KLevel + 1) * DCost * diffcost * KBulki;
-            // double finaldouble = (Math.Round(currentcost));
-            int finalcost = Convert.ToInt32(currentcost); //Convert.ToInt32(finaldouble);
-            return finalcost;
+            return Convert.ToInt32(cost);
         }
 
         // these slightly reduce garbage created by avoiding array allocations which is one reason OnGUI
@@ -291,7 +369,6 @@ namespace Hire
                     GUILayout.Label("Bulk hire Selector: " + KBulki);
                     KBulk = GUILayout.HorizontalSlider(KBulk, 1, cbulktest());
                     KBulki = Convert.ToInt32(KBulk);
-
                 }
 
                 GUI.contentColor = basecolor;
@@ -303,15 +380,27 @@ namespace Hire
                 KCourage = GUILayout.HorizontalSlider(KCourage, 0, 100);
                 GUILayout.Label("Stupidity:  " + Math.Truncate(KStupidity));
                 KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Is this Kerbal Fearless?");
                 KFearless = GUILayout.Toggle(KFearless, "Fearless");
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
 
+                if (hasKredits == true)
+                {
+                    GUILayout.BeginVertical("box");
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Is this Kerbal from\nPanda Center or Stock Center?");
+                    KStockCost = GUILayout.Toggle(KStockCost, "Stock Center");
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10);
+                    GUILayout.EndVertical();
+                }
+                
                 // Level selection
                 GUILayout.BeginVertical("box");
-                GUILayout.Label("Select Your Level:");
+                GUILayout.Label("Select Kerbal's Level:");
 
                 // If statements for level options
                 if (kerExp == false)
@@ -331,17 +420,28 @@ namespace Hire
                 {
                     GUILayout.BeginHorizontal("window");
                     GUILayout.BeginVertical();
+                    int cost = costMath();
                     //GUILayout.FlexibleSpace();
-                    if (costMath() <= Funding.Instance.Funds)
+
+                    if (cost <= Funding.Instance.Funds)
                     {
-                        GUILayout.Label("Cost: " + costMath(), HighLogic.Skin.textField);
+                        GUILayout.Label(
+                            (KDiscount!=0
+                                ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "")+"Your discount is " + KDiscount * 100 + " %\n" 
+                                : "")
+                            + "Total Cost: " + cost, HighLogic.Skin.textField);
                     }
                     else
                     {
-                        GUI.color = Color.red;
-                        GUILayout.Label("Insufficient Funds - Cost: " + costMath(), HighLogic.Skin.textField);
+                        GUI.color = Color.red;                    
+                        GUILayout.Label(
+                            (KDiscount != 0        
+                                ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "") +  "Your discount is " + KDiscount * 100 + " %\n"
+                                : "")
+                            + "Total Cost: " + cost, HighLogic.Skin.textField); 
                         GUI.color = basecolor;
                     }
+
                     // GUILayout.FlexibleSpace();
                     GUILayout.EndVertical();
                     GUILayout.EndHorizontal();
