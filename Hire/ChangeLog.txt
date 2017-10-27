@@ -1,4 +1,4 @@
-0.6.2
+﻿0.6.2
 		Initial rebuild for KSP 1.3
 		Added standardized build scripts
 		Added AssemblyVersion.tt
@@ -9,3 +9,30 @@
 
 0.6.3
 		Updated for KSP 1.3.1
+
+0.6.4
+	Following changes submitted by @yalov:
+		checkbox for stock cost system
+		bulk purchase discounts (≥5 kerbals is 15% and 10 kerbals is 30%),
+		BlackMunday discount (day when eclipse occurs),
+		New Year discount;
+		pay x1.25 for choosing gender (male of female),
+		change default gender to random;
+		pay x2 for badass (they pretty unique and should be expensive);
+		low quality kerbal (Stupidity = 100, Courage = 0) gets x0.5,
+		high quality kerbal (Stupidity = 0, Courage = 100) gets x2.
+
+	Following changes by LGG:
+		Added settings page
+			Settings page includes:
+				KStockCost = false;
+				const_cost = 25000;
+				fearless_coef = 2f;
+				gender_coef = 1.25f;
+				bulk_discount1 = 15f;
+				bulk_discount2 = 30f;
+				black_discount = 10f;
+				new_year_discount = 50f;
+		Removed the Stock Center button and put it into the Settings page
+		Made all new settings fully configurable
+		Added Disable All Modifiers

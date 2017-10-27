@@ -11,5 +11,3 @@ copy /Y %GAMEDIR%.version GameData\%GAMEDIR%
 
 mkdir "%H%\GameData\%GAMEDIR%"
 xcopy /y /s GameData\%GAMEDIR% "%H%\GameData\%GAMEDIR%"
-
-pause
