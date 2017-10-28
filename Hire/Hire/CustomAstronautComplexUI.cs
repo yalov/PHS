@@ -197,6 +197,10 @@ namespace Hire
 
             double cost = basecost * quality_coef;
 
+            KDiscount = 0;
+            KBlackMunday = false;
+            KNewYear = false;
+
             if (!HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().disableAllModifiers)
             {
 
@@ -211,9 +215,7 @@ namespace Hire
 
                 cost *= DCost * difficulty_setting_coef * KBulki * (KLevel + 1);
 
-                KDiscount = 0;
-                KBlackMunday = false;
-                KNewYear = false;
+
 
                 //  discounts for bulk purchases
                 if (KBulki >= 10)
@@ -258,7 +260,8 @@ namespace Hire
                 }
                 // Max discount is 75%
                 KDiscount = Math.Min(KDiscount, 0.75);
-                cost *= 1 - KDiscount;
+                //cost *= 1 - KDiscount;
+                cost -= cost * KDiscount;
             }
             return Convert.ToInt32(cost);
         }

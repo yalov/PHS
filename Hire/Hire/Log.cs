@@ -38,7 +38,7 @@ namespace Hire
 
         public void SetLevel(LEVEL level)
         {
-            Hire.Log.Info("log level " + level);
+            UnityEngine.Debug.Log("log level " + level);
             Log.level = level;
         }
 
@@ -61,7 +61,7 @@ namespace Hire
         {
             if (IsLogable(LEVEL.TRACE))
             {
-                Hire.Log.Info(PREFIX + msg);
+                UnityEngine.Debug.Log(PREFIX + msg);
             }
         }
 
@@ -69,7 +69,7 @@ namespace Hire
         {
             if (IsLogable(LEVEL.DETAIL))
             {
-                Hire.Log.Info(PREFIX + msg);
+                UnityEngine.Debug.Log(PREFIX + msg);
             }
         }
 
@@ -80,7 +80,7 @@ namespace Hire
             if (IsLogable(LEVEL.INFO))
 
             {
-                Hire.Log.Info(PREFIX + msg);
+                UnityEngine.Debug.Log(PREFIX + msg);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Hire
             //if (IsLogable(LEVEL.INFO))
 
             {
-                Hire.Log.Warning(PREFIX + "TEST:" + msg);
+                UnityEngine.Debug.LogWarning(PREFIX + "TEST:" + msg);
             }
         }
 
@@ -99,7 +99,7 @@ namespace Hire
         {
             if (IsLogable(LEVEL.WARNING))
             {
-                Hire.Log.Warning(PREFIX + msg);
+                UnityEngine.Debug.LogWarning(PREFIX + msg);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Hire
         {
             if (IsLogable(LEVEL.ERROR))
             {
-                Hire.Log.Error(PREFIX + msg);
+                UnityEngine.Debug.LogError(PREFIX + msg);
             }
         }
 

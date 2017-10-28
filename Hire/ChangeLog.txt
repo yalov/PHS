@@ -36,3 +36,10 @@
 		Removed the Stock Center button and put it into the Settings page
 		Made all new settings fully configurable
 		Added Disable All Modifiers
+
+0.6.4.1
+	Fixed Logging code to eliminate endless loop
+	Moved the following initializers out of the disableAllModifiers if block:
+	        KDiscount
+            KBlackMunday 
+            KNewYear

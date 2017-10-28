@@ -19,7 +19,7 @@ namespace Hire
         private void Start()
         {
 #if DEBUG
-            DebugDimensions();
+           DebugDimensions();
 #endif
             var vectors = new Vector3[4];
             var uiCam = UIMasterController.Instance.GetComponentInChildren<UIMainCamera>();
@@ -57,7 +57,6 @@ namespace Hire
         private void DebugDimensions()
         {
             Hire.Log.Info("Debugging dimensions");
-
             var vectors = new Vector3[4];
             var camera = UIMasterController.Instance.GetComponentInChildren<UIMainCamera>().GetComponent<Camera>();
 
