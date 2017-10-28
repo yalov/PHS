@@ -7,7 +7,7 @@ rem set README=ReadMe.txt
 
 copy /Y "%1%2" "GameData\%GAMEDIR%"
 copy /Y %GAMEDIR%.version GameData\%GAMEDIR%
-copy /Y ..\..\MiniAVC.dll GameData\%GAMEDIR%
+copy /Y ..\MiniAVC.dll GameData\%GAMEDIR%
 
 if "%LICENSE%" NEQ "" copy /y  %LICENSE% GameData\%GAMEDIR%
 if "%README%" NEQ "" copy /Y %README% GameData\%GAMEDIR%
@@ -38,3 +38,5 @@ echo Version:  %VERSION%
 set FILE="%RELEASEDIR%\%GAMEDIR%-%VERSION%.zip"
 IF EXIST %FILE% del /F %FILE%
 %ZIP% a -tzip %FILE% GameData
+
+pause

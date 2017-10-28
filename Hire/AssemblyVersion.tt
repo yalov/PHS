@@ -28,7 +28,7 @@
 	int i2 = 0;
 	string s;
 
-	string versionfile =  @"D:\Users\jbb\github\PHS\Hire\TRP-Hire.version";
+	string versionfile =  @"D:\Users\jbb\github\PHS\TRP-Hire.version";
 	if (!File.Exists(versionfile))
 	{
 		Write("File: " + versionfile + " missing\n");		

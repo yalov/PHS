@@ -86,10 +86,10 @@ set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Com
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
-start /D D:\Users\jbb\github\PHS\Hire /WAIT deploy.bat  $(TargetDir) $(TargetFileName)
+start /D D:\Users\jbb\github\PHS /WAIT deploy.bat  $(TargetDir) $(TargetFileName)
 
 if $(ConfigurationName) == Release (
-start /D D:\Users\jbb\github\PHS\Hire /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+start /D D:\Users\jbb\github\PHS /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
 )
 </PostBuildEvent>
   </PropertyGroup>

@@ -1,0 +1,29 @@
+#
+# This file contains several types of information:
+#
+# 1     Mod install directory
+# 2     Project definitions
+# 3     Files to copy, source, dest
+# 4     Directory to copy, sourcedir, destdir
+# 5     Add ModuleManager to GameData
+# 6     Spacedock.info mod id
+
+# 1:GAMEDIR, VERSIONFILE
+1:TRP-Hire, TRP-Hire.version
+
+# 2:PROJNAME, PROJ, VERSIONFILE, PLUGINSFOLDER
+2:Hire,Hire.csproj,TRP-Hire.version,GameData/TRP-Hire
+
+# 3:SOURCEFILE, DESTDIR
+3:TRP-Hire.version,GameData/TRP-Hire
+3:TRP-License.txt,GameData/TRP-Hire
+
+# 4:SOURCDIR, DESTDIR
+#4:Textures,GameData/ManeuverQueue/Textures
+
+# 5:ModuleManager
+# 5:ModuleManager
+
+# 6:mod_id
+6:777
+
