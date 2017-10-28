@@ -205,10 +205,10 @@ namespace Hire
             {
 
                 if (KFearless == true)
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef / 100.0;
+                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef;
 
                 if (KGender != 2)
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().gender_coef / 100.0;
+                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().gender_coef;
 
                 DCost = 1 + (KDead * 0.1f);
                 float difficulty_setting_coef = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;

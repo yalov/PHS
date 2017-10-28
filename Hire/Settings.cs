@@ -27,7 +27,7 @@ namespace Hire
             toolTip ="Using the Stock Center costs will result in varying base costs for each Kerbal, based on how many Kerbals are active")]
         public bool KStockCost = false;
 
-        [GameParameters.CustomFloatParameterUI("Panda Center Base Cost", minValue = 12500f, maxValue = 100000f, stepCount = 500,
+        [GameParameters.CustomFloatParameterUI("Panda Center Base Cost", minValue = 12500f, maxValue = 100000f, stepCount = 175,
             toolTip ="This is the base cost for each Kerbal when using the Panda Center Base Cost")]                                   // stepCount don't work 
         public double const_cost = 25000f;
 
@@ -39,22 +39,7 @@ namespace Hire
         {
             disableAllModifiers = false;
             const_cost = 25000;
-
-            switch (preset)
-            {
-                case GameParameters.Preset.Easy:
-                    KStockCost = false;                 
-                    break;
-                case GameParameters.Preset.Normal:
-                    KStockCost = false;
-                    break;
-                case GameParameters.Preset.Moderate:
-                    KStockCost = false;
-                    break;
-                case GameParameters.Preset.Hard:
-                    KStockCost = true;   // Hard
-                    break;
-            }
+            KStockCost = false;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -93,11 +78,11 @@ namespace Hire
         [GameParameters.CustomParameterUI("Set values to default")]
         public bool DefaultSettings = false;
 
-        [GameParameters.CustomFloatParameterUI("Fearless Cost Modifier (%)", minValue = 100f, maxValue = 300f, stepCount = 5)]
-        public double fearless_coef = 200f;
+        [GameParameters.CustomFloatParameterUI("Fearless Cost Modifier", minValue = 1.0f, maxValue = 4f, displayFormat = "N2")]
+        public double fearless_coef = 2f;
 
-        [GameParameters.CustomFloatParameterUI("Gender Cost Modifier (%)",   minValue = 100f, maxValue = 200f, stepCount = 5)]
-        public double gender_coef = 125f;
+        [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2")]
+        public double gender_coef = 1.25f;
 
         [GameParameters.CustomFloatParameterUI("Bulk (5-9) Discount (%)", minValue = 0f, maxValue = 40f)]
         public double bulk_discount1 = 15f;
@@ -122,8 +107,8 @@ namespace Hire
         {
             DefaultSettings = false;
 
-            fearless_coef = 200f;
-            gender_coef = 125f;
+            fearless_coef = 2f;
+            gender_coef = 1.25f;
             bulk_discount1 = 15f;
             bulk_discount2 = 30f;
             black_discount = 10f;
