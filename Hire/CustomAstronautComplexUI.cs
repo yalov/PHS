@@ -27,8 +27,8 @@ namespace Hire
         private static float KStupidity = 50;
         private static float KCourage = 50;
         private static bool KFearless = false;
-        //private static bool KStockCost = false;
         private static double KDiscount = 0;
+        private static bool KDiscountOverFlow = false;
         private static bool KBlackMunday = false;
         private static bool KNewYear = false;
         private static int KCareer = 0;
@@ -205,10 +205,10 @@ namespace Hire
             {
 
                 if (KFearless == true)
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().fearless_coef;
+                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef / 100.0;
 
                 if (KGender != 2)
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().gender_coef;
+                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().gender_coef / 100.0;
 
                 DCost = 1 + (KDead * 0.1f);
                 float difficulty_setting_coef = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
@@ -219,9 +219,9 @@ namespace Hire
 
                 //  discounts for bulk purchases
                 if (KBulki >= 10)
-                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().bulk_discount2 / 100;
+                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().bulk_discount2 / 100;
                 else if (KBulki >= 5)
-                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().bulk_discount1 / 100;
+                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().bulk_discount1 / 100;
 
                 //  discounts: BlackMunday is day of eclipse, NewYear is last days of year
                 if (Planetarium.fetch != null)
@@ -248,19 +248,22 @@ namespace Hire
                     if (day_of_year == eclipse_day_of_year)
                     {
                         KBlackMunday = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().black_discount / 100;
+                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().black_discount / 100;
                     }
 
                     int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
                     if (days_in_year - day_of_year < 3)
                     {
                         KNewYear = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().new_year_discount / 100;
+                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().new_year_discount / 100;
                     }
                 }
-                // Max discount is 75%
-                KDiscount = Math.Min(KDiscount, HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().max_discount / 100);
-                //cost *= 1 - KDiscount;
+                if (KDiscount > HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().max_discount / 100)
+                {
+                    KDiscount = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().max_discount / 100;
+                    KDiscountOverFlow = true;
+                }
+                
                 cost -= cost * KDiscount;
             }
             return Convert.ToInt32(cost);
@@ -394,19 +397,6 @@ namespace Hire
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
 
-#if false
-                if (hasKredits == true)
-                {
-                    GUILayout.BeginVertical("box");
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Is this Kerbal from\nPanda Center or Stock Center?");
-                    KStockCost = GUILayout.Toggle(KStockCost, "Stock Center");
-                    GUILayout.EndHorizontal();
-                    GUILayout.Space(10);
-                    GUILayout.EndVertical();
-                }
-#endif
-
                 // Level selection
                 GUILayout.BeginVertical("box");
                 GUILayout.Label("Select Kerbal's Level:");
@@ -433,9 +423,8 @@ namespace Hire
                     //GUILayout.FlexibleSpace();
 
                     string msg = (
-                            (KDiscount >= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().max_discount / 100) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().max_discount + "% reached!\n" : "") +
-                            (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") +
-                                (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
+                            (KDiscountOverFlow) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().max_discount + "% reached!\n" : "")
+                            + (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
                             + "Total Cost: " + cost;
                     if (cost <= Funding.Instance.Funds)
                     {
