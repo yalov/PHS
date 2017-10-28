@@ -48,12 +48,17 @@ namespace Hire
         [GameParameters.CustomFloatParameterUI("Bulk (6-10) Discount (%)", minValue = 0.0f, maxValue = 40f)]
         public double bulk_discount2 = 30f;
 
-        [GameParameters.CustomFloatParameterUI("Black Munday Discount (%)", minValue = 0f, maxValue = 20f)]
+        [GameParameters.CustomFloatParameterUI("Black Munday Discount (%)", minValue = 0f, maxValue = 20f,
+            toolTip = "Discount on day when eclipse occurs")]
         public double black_discount = 10f;
 
-        [GameParameters.CustomFloatParameterUI("New Year Discount (%)", minValue = 0f, maxValue = 75f)]
+        [GameParameters.CustomFloatParameterUI("New Year Discount (%)", minValue = 0f, maxValue = 75f,
+            toolTip = "Discount when adding kerbonauts within 3 days of the new year")]
         public double new_year_discount = 50f;
 
+        [GameParameters.CustomFloatParameterUI("Maximum Discount Allowed (%)", minValue = 25f, maxValue = 99f,
+            toolTip ="The final discount can include multiple discounts added together.  The maximum discount will never exceed this value")]
+        public double max_discount = 75f;
 
 
 

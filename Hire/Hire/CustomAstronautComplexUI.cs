@@ -259,7 +259,7 @@ namespace Hire
                     }
                 }
                 // Max discount is 75%
-                KDiscount = Math.Min(KDiscount, 0.75);
+                KDiscount = Math.Min(KDiscount, HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().max_discount / 100);
                 //cost *= 1 - KDiscount;
                 cost -= cost * KDiscount;
             }
@@ -432,22 +432,19 @@ namespace Hire
                     int cost = costMath();
                     //GUILayout.FlexibleSpace();
 
+                    string msg = (
+                            (KDiscount >= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().max_discount / 100) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().max_discount + "% reached!\n" : "") +
+                            (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") +
+                                (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
+                            + "Total Cost: " + cost;
                     if (cost <= Funding.Instance.Funds)
                     {
-                        GUILayout.Label(
-                            (KDiscount != 0
-                                ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n"
-                                : "")
-                            + "Total Cost: " + cost, HighLogic.Skin.textField);
+                        GUILayout.Label(msg, HighLogic.Skin.textField);
                     }
                     else
                     {
                         GUI.color = Color.red;
-                        GUILayout.Label(
-                            (KDiscount != 0
-                                ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n"
-                                : "")
-                            + "Total Cost: " + cost, HighLogic.Skin.textField);
+                        GUILayout.Label(msg, HighLogic.Skin.textField);
                         GUI.color = basecolor;
                     }
 

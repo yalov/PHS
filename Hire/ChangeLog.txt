@@ -43,3 +43,6 @@
 	        KDiscount
             KBlackMunday 
             KNewYear
+	Added Max Allowable Discount to settings
+	Added some tool tips in the settings
+	Rewrote messages to eliminate duplication of code
