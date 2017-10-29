@@ -6,7 +6,7 @@ set GAMEDIR=TRP-Hire
 
 echo %H%
 
-copy /Y "%1%2" "GameData\%GAMEDIR%"
+copy /Y "%1%2" "GameData\%GAMEDIR%"\Plugins
 copy /Y %GAMEDIR%.version GameData\%GAMEDIR%
 
 mkdir "%H%\GameData\%GAMEDIR%"

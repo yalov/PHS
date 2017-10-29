@@ -88,7 +88,7 @@ namespace Hire
         public double fearless_coef = 2f;
 
         [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2",
-            tooltip = "The privilege of selecting the sex costs kredits")]
+            toolTip = "The privilege of selecting the sex costs kredits")]
         public double gender_coef = 1.25f;
 
 
@@ -141,11 +141,11 @@ namespace Hire
         public bool DefaultSettings = false;
 
         [GameParameters.CustomFloatParameterUI("Bulk (5-9) Discount (%)", minValue = 0f, maxValue = 40f,
-            tooltip = "Hiring multiple kerbals at the same time saves Kredits in the hiring process")]
+            toolTip = "Hiring multiple kerbals at the same time saves Kredits in the hiring process")]
         public double bulk_discount1 = 15f;
 
-        [GameParameters.CustomFloatParameterUI("Bulk (10) Discount (%)", minValue = 0.0f, maxValue = 40f),
-             tooltip = "Hiring multiple kerbals at the same time saves Kredits in the hiring process")]
+        [GameParameters.CustomFloatParameterUI("Bulk (10) Discount (%)", minValue = 0.0f, maxValue = 40f,
+             toolTip = "Hiring multiple kerbals at the same time saves Kredits in the hiring process")]
         public double bulk_discount2 = 30f;
 
         [GameParameters.CustomFloatParameterUI("Black Munday Discount (%)", minValue = 0f, maxValue = 40f,

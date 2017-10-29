@@ -5,7 +5,7 @@ set GAMEDIR=TRP-Hire
 set LICENSE=TRP-License.txt
 rem set README=ReadMe.txt
 
-copy /Y "%1%2" "GameData\%GAMEDIR%"
+copy /Y "%1%2" "GameData\%GAMEDIR%"\Plugins
 copy /Y %GAMEDIR%.version GameData\%GAMEDIR%
 copy /Y ..\MiniAVC.dll GameData\%GAMEDIR%
 
