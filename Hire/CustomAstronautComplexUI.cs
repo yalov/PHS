@@ -219,9 +219,9 @@ namespace Hire
 
                 //  discounts for bulk purchases
                 if (KBulki >= 10)
-                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().bulk_discount2 / 100;
+                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().bulk_discount2 / 100;
                 else if (KBulki >= 5)
-                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().bulk_discount1 / 100;
+                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().bulk_discount1 / 100;
 
                 //  discounts: BlackMunday is day of eclipse, NewYear is last days of year
                 if (Planetarium.fetch != null)
@@ -248,19 +248,19 @@ namespace Hire
                     if (day_of_year == eclipse_day_of_year)
                     {
                         KBlackMunday = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().black_discount / 100;
+                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
                     }
 
                     int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
                     if (days_in_year - day_of_year < 3)
                     {
                         KNewYear = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().new_year_discount / 100;
+                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().new_year_discount / 100;
                     }
                 }
-                if (KDiscount > HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().max_discount / 100)
+                if (KDiscount > HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount / 100)
                 {
-                    KDiscount = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().max_discount / 100;
+                    KDiscount = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount / 100;
                     KDiscountOverFlow = true;
                 }
                 
@@ -423,7 +423,7 @@ namespace Hire
                     //GUILayout.FlexibleSpace();
 
                     string msg = (
-                            (KDiscountOverFlow) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().max_discount + "% reached!\n" : "")
+                            (KDiscountOverFlow) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount + "% reached!\n" : "")
                             + (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
                             + "Total Cost: " + cost;
                     if (cost <= Funding.Instance.Funds)

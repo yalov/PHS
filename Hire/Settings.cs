@@ -27,13 +27,14 @@ namespace Hire
             toolTip ="Using the Stock Center costs will result in varying base costs for each Kerbal, based on how many Kerbals are active")]
         public bool KStockCost = false;
 
-        [GameParameters.CustomFloatParameterUI("Panda Center Base Cost", minValue = 12500f, maxValue = 100000f, stepCount = 175,
-            toolTip ="This is the base cost for each Kerbal when using the Panda Center Base Cost")]                                   // stepCount don't work 
-        public double const_cost = 25000f;
+       
+        [GameParameters.CustomIntParameterUI("Panda Center Base Cost", minValue = 12500, maxValue = 100000, stepSize = 500,
+              toolTip = "This is the base cost for each Kerbal when using the Panda Center Base Cost")]                                   // stepCount don't work 
+        public int const_cost = 25000;
+
 
         [GameParameters.CustomParameterUI("Disable all modifiers and discounts")]
         public bool disableAllModifiers = false;
-
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
@@ -55,6 +56,8 @@ namespace Hire
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
+            HireSettings2.disabled = disableAllModifiers;
+            HireSettings3.disabled = disableAllModifiers;
             return true;
         }
 
@@ -68,12 +71,14 @@ namespace Hire
     public class HireSettings2 : GameParameters.CustomParameterNode
     {
 
-        public override string Title { get { return "Modifiers and Discounts"; } }
+        public override string Title { get { return "Modifiers"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "TRP Hire"; } }
         public override string DisplaySection { get { return "TRP Hire"; } }
         public override int SectionOrder { get { return 2; } }
         public override bool HasPresets { get { return true; } }
+
+        internal static bool disabled = false;
 
         [GameParameters.CustomParameterUI("Set values to default")]
         public bool DefaultSettings = false;
@@ -83,6 +88,55 @@ namespace Hire
 
         [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2")]
         public double gender_coef = 1.25f;
+
+
+        public override void SetDifficultyPreset(GameParameters.Preset preset)
+        {
+            DefaultSettings = false;
+
+            fearless_coef = 2f;
+            gender_coef = 1.25f;
+
+        }
+
+
+        public override bool Enabled(MemberInfo member, GameParameters parameters)
+        {
+            if (disabled)
+                return false;
+
+            return true;
+        }
+
+
+        public override bool Interactible(MemberInfo member, GameParameters parameters)
+        {
+            if (member.Name == "DefaultSettings" && DefaultSettings)
+                SetDifficultyPreset(parameters.preset);
+            return true;
+        }
+
+        public override IList ValidValues(MemberInfo member)
+        {
+            return null;
+        }
+    }
+
+
+    public class HireSettings3 : GameParameters.CustomParameterNode
+    {
+
+        public override string Title { get { return "Discounts"; } }
+        public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
+        public override string Section { get { return "TRP Hire"; } }
+        public override string DisplaySection { get { return "TRP Hire"; } }
+        public override int SectionOrder { get { return 3; } }
+        public override bool HasPresets { get { return true; } }
+
+        internal static bool disabled = false;
+
+        [GameParameters.CustomParameterUI("Set values to default")]
+        public bool DefaultSettings = false;
 
         [GameParameters.CustomFloatParameterUI("Bulk (5-9) Discount (%)", minValue = 0f, maxValue = 40f)]
         public double bulk_discount1 = 15f;
@@ -107,8 +161,6 @@ namespace Hire
         {
             DefaultSettings = false;
 
-            fearless_coef = 2f;
-            gender_coef = 1.25f;
             bulk_discount1 = 15f;
             bulk_discount2 = 30f;
             black_discount = 10f;
@@ -119,16 +171,7 @@ namespace Hire
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
-            if (member.Name == "DefaultSettings" && DefaultSettings)
-                SetDifficultyPreset(parameters.preset);
-
-            if (bulk_discount2 < bulk_discount1)
-                bulk_discount2 = bulk_discount1;
-
-            if (HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().disableAllModifiers 
-                        && member.Name != "disableAllModifiers"
-                        && member.Name != "KStockCost"
-                        && member.Name != "const_cost")
+            if (disabled)
                 return false;
 
             return true;
@@ -137,6 +180,10 @@ namespace Hire
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
+            if (bulk_discount2 < bulk_discount1)
+                bulk_discount2 = bulk_discount1;
+            if (member.Name == "DefaultSettings" && DefaultSettings)
+                SetDifficultyPreset(parameters.preset);
             return true;
         }
 
@@ -145,4 +192,5 @@ namespace Hire
             return null;
         }
     }
+
 }
