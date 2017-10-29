@@ -83,10 +83,12 @@ namespace Hire
         [GameParameters.CustomParameterUI("Set values to default")]
         public bool DefaultSettings = false;
 
-        [GameParameters.CustomFloatParameterUI("Fearless Cost Modifier", minValue = 1.0f, maxValue = 4f, displayFormat = "N2")]
+        [GameParameters.CustomFloatParameterUI("Fearless Cost Modifier", minValue = 1.0f, maxValue = 4f, displayFormat = "N2",
+            toolTip ="Fearless kerbals get a higher pay, based on this value.")]
         public double fearless_coef = 2f;
 
-        [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2")]
+        [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2",
+            tooltip = "The privilege of selecting the sex costs kredits")]
         public double gender_coef = 1.25f;
 
 
@@ -138,10 +140,12 @@ namespace Hire
         [GameParameters.CustomParameterUI("Set values to default")]
         public bool DefaultSettings = false;
 
-        [GameParameters.CustomFloatParameterUI("Bulk (5-9) Discount (%)", minValue = 0f, maxValue = 40f)]
+        [GameParameters.CustomFloatParameterUI("Bulk (5-9) Discount (%)", minValue = 0f, maxValue = 40f,
+            tooltip = "Hiring multiple kerbals at the same time saves Kredits in the hiring process")]
         public double bulk_discount1 = 15f;
 
-        [GameParameters.CustomFloatParameterUI("Bulk (10) Discount (%)", minValue = 0.0f, maxValue = 40f)]
+        [GameParameters.CustomFloatParameterUI("Bulk (10) Discount (%)", minValue = 0.0f, maxValue = 40f),
+             tooltip = "Hiring multiple kerbals at the same time saves Kredits in the hiring process")]
         public double bulk_discount2 = 30f;
 
         [GameParameters.CustomFloatParameterUI("Black Munday Discount (%)", minValue = 0f, maxValue = 40f,
@@ -152,9 +156,9 @@ namespace Hire
             toolTip = "Discount within 3 days of every year-end")]
         public double new_year_discount = 50f;
 
-        [GameParameters.CustomFloatParameterUI("Maximum Discount Allowed (%)", minValue = 25f, maxValue = 99f,
+        [GameParameters.CustomFloatParameterUI("Maximum Discount Allowed (%)", minValue = 25f, maxValue = 90f,
             toolTip = "The final discount can include multiple discounts added together.  The maximum discount will never exceed this value")]
-        public double max_discount = 90f;   // default max_discount value need to be exactly max sum of default discount added together (30+10+50) 
+        public double max_discount = 90f;
 
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
