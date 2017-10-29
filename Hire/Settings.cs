@@ -29,7 +29,7 @@ namespace Hire
 
        
         [GameParameters.CustomIntParameterUI("Panda Center Base Cost", minValue = 12500, maxValue = 100000, stepSize = 500,
-              toolTip = "This is the base cost for each Kerbal when using the Panda Center Base Cost")]                                   // stepCount don't work 
+              toolTip = "This is the base cost for each Kerbal when using the Panda Center Base Cost")]
         public int const_cost = 25000;
 
 
@@ -83,22 +83,38 @@ namespace Hire
         [GameParameters.CustomParameterUI("Set values to default")]
         public bool DefaultSettings = false;
 
+        [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2",
+            toolTip = "The privilege of selecting the sex costs kredits")]
+        public double gender_coef = 1.25f;
+
+        [GameParameters.CustomFloatParameterUI("Low Quality Cost Modifier", minValue = 0.25f, maxValue = 1f, displayFormat = "N2",
+            toolTip = "Cost Modifier of Low Quality kerbal (Stupidity = 100, Courage = 0)")]
+        public double low_quality = 0.5f;
+
+        [GameParameters.CustomFloatParameterUI("High Quality Cost Modifier", minValue = 1f, maxValue = 4f, displayFormat = "N2",
+            toolTip = "Cost Modifier of High Quality kerbal (Stupidity = 100, Courage = 0)")]
+        public double high_quality = 2f;
+
         [GameParameters.CustomFloatParameterUI("Fearless Cost Modifier", minValue = 1.0f, maxValue = 4f, displayFormat = "N2",
             toolTip ="Fearless kerbals get a higher pay, based on this value.")]
         public double fearless_coef = 2f;
 
-        [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2",
-            toolTip = "The privilege of selecting the sex costs kredits")]
-        public double gender_coef = 1.25f;
+        [GameParameters.CustomFloatParameterUI("LevelUp Cost Modifier", minValue = 0.0f, maxValue = 3f, displayFormat = "N2",
+            toolTip = "More skilled kerbals get a higher pay, based on this value.")]
+        public double levelup_coef = 1f;
+
+
 
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             DefaultSettings = false;
 
+            low_quality = 0.5f;
+            high_quality = 2f;
             fearless_coef = 2f;
             gender_coef = 1.25f;
-
+            levelup_coef = 1f;
         }
 
 

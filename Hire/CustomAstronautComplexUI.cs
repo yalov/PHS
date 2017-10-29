@@ -168,41 +168,32 @@ namespace Hire
         {
             dCheck();
 
-            // Params for config
-            //float const_cost = 25000F;
-            float b = 0.5F;         // cost quality coef of bad    kerbal (KStupidity = 100, KCourage = 0  )
-            float n = 1F;           // cost quality coef of normal kerbal (KStupidity = 50,  KCourage = 50 )
-            float g = 2F;           // cost quality coef of good   kerbal (KStupidity = 0,   KCourage = 100)
-            //float fearless_coef = 2F;           // badass gets x2
-            //float gender_coef = 1.25F;          // pay for choosing gender
+            // Kerbal Quality Cost Modifier
+            double low = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().low_quality;
+            double mid = 1;
+            double high = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().high_quality;
 
-            //float bulk_discount1 = 0.15F;       // >= 5 kerbals
-            //float bulk_discount2 = 0.30F;       // = 10 kerbals
-            //float black_discount = 0.10F;
-            //float new_year_discount = 0.50F;
-
-            float basecost;
+            double cost;
             if (HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().KStockCost)
-                basecost = GameVariables.Instance.GetRecruitHireCost(HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount());
+                cost = GameVariables.Instance.GetRecruitHireCost(HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount());
             else
-                basecost = (float)HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().const_cost;
-
-            float kerbal_quality = (100 - KStupidity + KCourage) / 200;
-            float quality_coef;
-
-            if (kerbal_quality < 0.5)
-                quality_coef = 2 * (n - b) * kerbal_quality + b;
-            else
-                quality_coef = 2 * (g - n) * kerbal_quality - g + 2 * n;
-
-            double cost = basecost * quality_coef;
-
-            KDiscount = 0;
-            KBlackMunday = false;
-            KNewYear = false;
+                cost = (double)HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().const_cost;
 
             if (!HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().disableAllModifiers)
             {
+                double kerbal_quality = (100 - KStupidity + KCourage) / 200;
+                double quality_coef;
+
+                if (kerbal_quality < 0.5)
+                    quality_coef = 2 * (mid - low) * kerbal_quality + low;
+                else
+                    quality_coef = 2 * (high - mid) * kerbal_quality - high + 2 * mid;
+
+                cost *= quality_coef;
+
+                KDiscount = 0;
+                KBlackMunday = false;
+                KNewYear = false;
 
                 if (KFearless == true)
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef;
@@ -212,10 +203,9 @@ namespace Hire
 
                 DCost = 1 + (KDead * 0.1f);
                 float difficulty_setting_coef = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
+                double levelup_coef = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().levelup_coef;
 
-                cost *= DCost * difficulty_setting_coef * KBulki * (KLevel + 1);
-
-
+                cost *= DCost * difficulty_setting_coef * KBulki * (1 + levelup_coef * KLevel);
 
                 //  discounts for bulk purchases
                 if (KBulki >= 10)
@@ -473,5 +463,4 @@ namespace Hire
             }
         }
     }
-
 }
