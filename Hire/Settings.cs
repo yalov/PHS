@@ -23,24 +23,41 @@ namespace Hire
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return true; } }
 
+        [GameParameters.CustomParameterUI("Set values to default",
+            toolTip = "Set the values to their default values in this column section")]
+        public bool DefaultSettings = false;
+
         [GameParameters.CustomParameterUI("Use Stock Center cost for Kerbals",
-            toolTip ="Using the Stock Center costs will result in varying base costs for each Kerbal, based on how many Kerbals are active")]
+            toolTip = "Using the Stock Center costs will result in varying base costs for each Kerbal, based on how many Kerbals are active")]
         public bool KStockCost = false;
 
-       
+
         [GameParameters.CustomIntParameterUI("Panda Center Base Cost", minValue = 12500, maxValue = 100000, stepSize = 500,
               toolTip = "This is the base cost for each Kerbal when using the Panda Center Base Cost")]
         public int const_cost = 25000;
 
 
-        [GameParameters.CustomParameterUI("Disable all modifiers and discounts")]
+        [GameParameters.CustomParameterUI("Disable advanced modifiers and discounts",
+            toolTip = "The modifiers in this column are still active, this only disables the two columns to the right")]
         public bool disableAllModifiers = false;
+
+        [GameParameters.CustomFloatParameterUI("Low Quality Cost Modifier", minValue = 0.25f, maxValue = 1f, displayFormat = "N2",
+            toolTip = "Cost Modifier of Low Quality kerbal (Stupidity = 100, Courage = 0)")]
+        public double low_quality = 0.5f;
+
+        [GameParameters.CustomFloatParameterUI("High Quality Cost Modifier", minValue = 1f, maxValue = 4f, displayFormat = "N2",
+            toolTip = "Cost Modifier of High Quality kerbal (Stupidity = 100, Courage = 0)")]
+        public double high_quality = 2f;
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             disableAllModifiers = false;
             const_cost = 25000;
             KStockCost = false;
+
+            low_quality = 0.5f;
+            high_quality = 2f;
+            DefaultSettings = false;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -56,6 +73,9 @@ namespace Hire
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
+            if (member.Name == "DefaultSettings" && DefaultSettings)
+                SetDifficultyPreset(parameters.preset);
+
             HireSettings2.disabled = disableAllModifiers;
             HireSettings3.disabled = disableAllModifiers;
             return true;
@@ -71,7 +91,7 @@ namespace Hire
     public class HireSettings2 : GameParameters.CustomParameterNode
     {
 
-        public override string Title { get { return "Modifiers"; } }
+        public override string Title { get { return "Advanced Modifiers"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "TRP Hire"; } }
         public override string DisplaySection { get { return "TRP Hire"; } }
@@ -80,13 +100,15 @@ namespace Hire
 
         internal static bool disabled = false;
 
-        [GameParameters.CustomParameterUI("Set values to default")]
+        [GameParameters.CustomParameterUI("Set values to default",
+            toolTip = "Set the values to their default values in this column section")]
         public bool DefaultSettings = false;
 
         [GameParameters.CustomFloatParameterUI("Gender Cost Modifier", minValue = 1f, maxValue = 2f, displayFormat = "N2",
             toolTip = "The privilege of selecting the sex costs kredits")]
         public double gender_coef = 1.25f;
 
+#if false
         [GameParameters.CustomFloatParameterUI("Low Quality Cost Modifier", minValue = 0.25f, maxValue = 1f, displayFormat = "N2",
             toolTip = "Cost Modifier of Low Quality kerbal (Stupidity = 100, Courage = 0)")]
         public double low_quality = 0.5f;
@@ -94,9 +116,9 @@ namespace Hire
         [GameParameters.CustomFloatParameterUI("High Quality Cost Modifier", minValue = 1f, maxValue = 4f, displayFormat = "N2",
             toolTip = "Cost Modifier of High Quality kerbal (Stupidity = 100, Courage = 0)")]
         public double high_quality = 2f;
-
+#endif
         [GameParameters.CustomFloatParameterUI("Fearless Cost Modifier", minValue = 1.0f, maxValue = 4f, displayFormat = "N2",
-            toolTip ="Fearless kerbals get a higher pay, based on this value.")]
+            toolTip = "Fearless kerbals get a higher pay, based on this value.")]
         public double fearless_coef = 2f;
 
         [GameParameters.CustomFloatParameterUI("LevelUp Cost Modifier", minValue = 0.0f, maxValue = 3f, displayFormat = "N2",
@@ -109,9 +131,10 @@ namespace Hire
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             DefaultSettings = false;
-
+#if false
             low_quality = 0.5f;
             high_quality = 2f;
+#endif
             fearless_coef = 2f;
             gender_coef = 1.25f;
             levelup_coef = 1f;
@@ -153,7 +176,8 @@ namespace Hire
 
         internal static bool disabled = false;
 
-        [GameParameters.CustomParameterUI("Set values to default")]
+        [GameParameters.CustomParameterUI("Set values to default",
+            toolTip = "Set the values to their default values in this column section")]
         public bool DefaultSettings = false;
 
         [GameParameters.CustomFloatParameterUI("Bulk (5-9) Discount (%)", minValue = 0f, maxValue = 40f,

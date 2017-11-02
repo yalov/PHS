@@ -169,9 +169,9 @@ namespace Hire
             dCheck();
 
             // Kerbal Quality Cost Modifier
-            double low = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().low_quality;
+            double low = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().low_quality;
             double mid = 1;
-            double high = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().high_quality;
+            double high = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().high_quality;
 
             double cost;
             if (HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().KStockCost)
@@ -179,21 +179,22 @@ namespace Hire
             else
                 cost = (double)HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().const_cost;
 
+            double kerbal_quality = (100 - KStupidity + KCourage) / 200;
+            double quality_coef;
+
+            if (kerbal_quality < 0.5)
+                quality_coef = 2 * (mid - low) * kerbal_quality + low;
+            else
+                quality_coef = 2 * (high - mid) * kerbal_quality - high + 2 * mid;
+
+            cost *= quality_coef;
+
+            KDiscount = 0;
+            KBlackMunday = false;
+            KNewYear = false;
+
             if (!HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().disableAllModifiers)
             {
-                double kerbal_quality = (100 - KStupidity + KCourage) / 200;
-                double quality_coef;
-
-                if (kerbal_quality < 0.5)
-                    quality_coef = 2 * (mid - low) * kerbal_quality + low;
-                else
-                    quality_coef = 2 * (high - mid) * kerbal_quality - high + 2 * mid;
-
-                cost *= quality_coef;
-
-                KDiscount = 0;
-                KBlackMunday = false;
-                KNewYear = false;
 
                 if (KFearless == true)
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef;
@@ -253,7 +254,7 @@ namespace Hire
                     KDiscount = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount / 100;
                     KDiscountOverFlow = true;
                 }
-                
+
                 cost -= cost * KDiscount;
             }
             return Convert.ToInt32(cost);
