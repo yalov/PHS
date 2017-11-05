@@ -46,3 +46,5 @@
 	Added Max Allowable Discount to settings
 	Added some tool tips in the settings
 	Rewrote messages to eliminate duplication of code
+	Put low and high quality modifiers onto first settings section
+	Thanks to forum user @flart (github user @yalov) for most of these changes
