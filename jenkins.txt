@@ -14,8 +14,8 @@
 # and must use forward slashes
 #
 
-# 1:GAMEDIR, VERSIONFILE
-1:TRP-Hire, TRP-Hire.version
+# 1:GAMEDIR, VERSIONFILE [, GITHUBREPO]
+1:TRP-Hire, TRP-Hire.version, PHS
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
 2:Hire,Hire/Hire.csproj,TRP-Hire.version,GameData/TRP-Hire/Plugins
