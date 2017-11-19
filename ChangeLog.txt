@@ -48,3 +48,7 @@
 	Rewrote messages to eliminate duplication of code
 	Put low and high quality modifiers onto first settings section
 	Thanks to forum user @flart (github user @yalov) for most of these changes
+
+0.6.5
+	Fixed compatability with Kopernicus 
+	Fixed error where a kerbal could be  hired even if there weren't enough funds

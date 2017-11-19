@@ -256,10 +256,11 @@ namespace Hire
         private static readonly GUILayoutOption[] StatOptions = { GUILayout.MaxWidth(100f) };
         private static readonly GUILayoutOption[] FlavorTextOptions = { GUILayout.MaxWidth(200f) };
 
-        private string hireStatus()
+        private string hireStatus( out bool hTest)
         {
 
             string bText = "Hire Applicant";
+            hTest = true;
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 double kredits = Funding.Instance.Funds;
@@ -267,6 +268,7 @@ namespace Hire
                 {
                     bText = "Not Enough Funds!";
                     hTest = false;
+                    return bText;
                 }
                 if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
                 {
@@ -424,12 +426,15 @@ namespace Hire
 
                 if (hTest)
                 {
-                    if (GUILayout.Button(hireStatus(), GUILayout.Width(200f)))
-                        kHire();
+                    if (GUILayout.Button(hireStatus(out hTest), GUILayout.Width(200f)))
+                    {
+                        if (hTest)
+                            kHire();
+                    }
                 }
                 if (!hTest)
                 {
-                    GUILayout.Button(hireStatus(), GUILayout.Width(200f));
+                    GUILayout.Button(hireStatus(out hTest), GUILayout.Width(200f));
                 }
 
                 GUILayout.FlexibleSpace();
