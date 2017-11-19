@@ -119,11 +119,7 @@ namespace Hire
 
                 if (KLevel == 1)
                 {
-                    newKerb.flightLog.AddEntry("Orbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Suborbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Flight,Kerbin");
-                    newKerb.flightLog.AddEntry("Land,Kerbin");
-                    newKerb.flightLog.AddEntry("Recover");
+                    newKerb.flightLog.AddEntry("Training1," + FlightGlobals.GetHomeBodyName());
                     newKerb.ArchiveFlightLog();
                     newKerb.experience = 2;
                     newKerb.experienceLevel = 1;
@@ -131,17 +127,7 @@ namespace Hire
                 }
                 if (KLevel == 2)
                 {
-                    newKerb.flightLog.AddEntry("Orbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Suborbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Flight,Kerbin");
-                    newKerb.flightLog.AddEntry("Land,Kerbin");
-                    newKerb.flightLog.AddEntry("Recover");
-                    newKerb.flightLog.AddEntry("Flyby,Mun");
-                    newKerb.flightLog.AddEntry("Orbit,Mun");
-                    newKerb.flightLog.AddEntry("Land,Mun");
-                    newKerb.flightLog.AddEntry("Flyby,Minmus");
-                    newKerb.flightLog.AddEntry("Orbit,Minmus");
-                    newKerb.flightLog.AddEntry("Land,Minmus");
+                    newKerb.flightLog.AddEntry("Training2," + FlightGlobals.GetHomeBodyName());
                     newKerb.ArchiveFlightLog();
                     newKerb.experience = 8;
                     newKerb.experienceLevel = 2;
