@@ -205,10 +205,13 @@ namespace Hire
                 if (Planetarium.fetch != null)
                 {
                     double seconds = Planetarium.GetUniversalTime();
-                    double eclipse_interval = 141115.4;
-                    double first_eclipse = 103000;
                     int sec_of_year = (int)seconds % KSPUtil.dateTimeFormatter.Year;
                     int day_of_year = sec_of_year / KSPUtil.dateTimeFormatter.Day + 1;
+#if false
+                    double eclipse_interval = 141115.4;
+                    double first_eclipse = 103000;
+                    
+                   
 
                     double pass_simce_eclipse = (seconds - first_eclipse + eclipse_interval) % eclipse_interval;
                     double before_eclipse = eclipse_interval - pass_simce_eclipse;
@@ -223,12 +226,23 @@ namespace Hire
                     int eclipse_sec_of_year = (int)seconds_nearest_eclipse % KSPUtil.dateTimeFormatter.Year;
                     int eclipse_day_of_year = eclipse_sec_of_year / KSPUtil.dateTimeFormatter.Day + 1;
 
+                    //var isEclipse = Orbital.HasClearPath(FlightGlobals.GetHomeBody(), Planetarium.fetch.Sun);
+
                     if (day_of_year == eclipse_day_of_year)
+                    {
+                        Hire.Log.Info("Eclipse, eclipseToday: " + Orbital.eclipseToday);
+                        KBlackMunday = true;
+                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
+                    }
+                    else
+                        Hire.Log.Info("Not Eclipse, eclipseToday: " + Orbital.eclipseToday);
+#else
+                    if (Orbital.eclipseToday)
                     {
                         KBlackMunday = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
                     }
-
+#endif
                     int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
                     if (days_in_year - day_of_year < 3)
                     {
@@ -401,10 +415,15 @@ namespace Hire
                     GUILayout.BeginVertical();
                     int cost = costMath();
                     //GUILayout.FlexibleSpace();
-
+                    string n = "";
+                    if (Orbital.eclipseToday != null)
+                        n = Orbital.eclipseToday.displayName;
+                    if (n != "")
+                        if (n.Substring(n.Length - 2) == "^N")
+                            n = n.Substring(0, n.Length - 2);
                     string msg = (
                             (KDiscountOverFlow) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount + "% reached!\n" : "")
-                            + (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
+                            + (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday (" + n + ")! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
                             + "Total Cost: " + cost;
                     if (cost <= Funding.Instance.Funds)
                     {

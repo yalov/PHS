@@ -50,5 +50,9 @@
 	Thanks to forum user @flart (github user @yalov) for most of these changes
 
 0.6.5
-	Fixed compatability with Kopernicus 
+	Fixed compatibility with Kopernicus, thanks @Galileo for reporting and @Sigma88 for providing a better fix than what I had 
 	Fixed error where a kerbal could be  hired even if there weren't enough funds
+
+0.6.6
+	Added proper checks for eclipse, rather than relying on fixed numbers.
+	Now displays which body is doing the eclipse
