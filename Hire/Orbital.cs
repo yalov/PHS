@@ -39,7 +39,7 @@ namespace Hire
                 for (double checkTime = currentDay; checkTime < endOfDay; checkTime += 60f)
                 {
                     // The chances of two bodies starting an eclipse at the same time are minimal
-                    var hcp = HasClearPath(checkTime, FlightGlobals.GetHomeBody(), Planetarium.fetch.Sun, Relative.closest);
+                    var hcp = HasClearPath(checkTime, Planetarium.fetch.Home, Planetarium.fetch.Sun, Relative.closest);
                     if (hcp!= null)
                     {
                         currentEclipsingbody = hcp;
@@ -67,7 +67,7 @@ namespace Hire
             {
                 if (rock == bOrigin || rock == bDestination)
                     continue;
-                Vector3d bodyFromOrigin = rock.position - opos;
+                Vector3d bodyFromOrigin = rock.getPositionAtUT(time) - opos;
                 Vector3d destFromOrigin = dpos - opos;
 
                 // is the destingation behind the origin?
