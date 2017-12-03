@@ -5,6 +5,7 @@ using KSP.UI.Screens;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using KSP.Localization;
 
 namespace Hire
 {
@@ -32,17 +33,33 @@ namespace Hire
         private static bool KBlackMunday = false;
         private static bool KNewYear = false;
         private static int KCareer = 0;
-        private string[] KCareerStrings = { "Pilot", "Scientist", "Engineer" };
+        private static string Pilot = Localizer.Format("#autoLOC_900433");
+        private static string Engineer = Localizer.Format("#autoLOC_900439");
+        private static string Scientist = Localizer.Format("#autoLOC_900442");
+
+        private string[] KCareerStrings = { Pilot, Scientist, Engineer };
         private static int KLevel = 0;
         private float Krep = Reputation.CurrentRep;
-        private string[] KLevelStringsZero = new string[1] { "Level 0" };
-        private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
-        private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
-        private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
+        private static string Level = Localizer.Format("#autoLOC_6002246");
+        
+        private string[] KLevelStringsZero = new string[1] { Level + " 0" };
+        private string[] KLevelStringsOne = new string[2] { Level + " 0", Level + " 1" };
+        private string[] KLevelStringsTwo = new string[3] { Level + " 0", Level + " 1", Level + " 2" };
+        private string[] KLevelStringsAll = new string[6] { Level + " 0", Level + " 1", Level + " 2", Level + " 3", Level + " 4", Level + " 5" };
+
+        private static string Male = Localizer.Format("#autoLOC_900434");
+        private static string Female = Localizer.Format("#autoLOC_900444");
+        private static string Random = Localizer.Format("#autoLOC_900432");
+
+        private static string Courage = Localizer.Format("#autoLOC_900436");      
+        private static string Stupidity = Localizer.Format("#autoLOC_900438");
+        private static string Badass = Localizer.Format("#autoLOC_900440");
+        private static string Veteran = Localizer.Format("#autoLOC_900437");
+
         private static int KGender = 2;  // default Random 
-        private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
-        private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
-        private GUIContent KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
+        private GUIContent KMale = new GUIContent(Male, AssetBase.GetTexture("kerbalicon_recruit"), "Male Kerbal");
+        private GUIContent KFemale = new GUIContent(Female, AssetBase.GetTexture("kerbalicon_recruit_female"), "Female Kerbal");
+        private GUIContent KGRandom = new GUIContent(Random, Localizer.Format("#TRPHire_RandomTooltip"));
         Color basecolor = GUI.color;
         private float ACLevel = 0;
         private double KDead;
@@ -242,6 +259,8 @@ namespace Hire
                         KBlackMunday = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
                     }
+
+                    
 #endif
                     int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
                     if (days_in_year - day_of_year < 3)
@@ -273,20 +292,20 @@ namespace Hire
         private string hireStatus( out bool hTest)
         {
 
-            string bText = "Hire Applicant";
+            string bText = Localizer.Format("#TRPHire_Button_Hire");
             hTest = true;
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 double kredits = Funding.Instance.Funds;
                 if (costMath() > kredits)
                 {
-                    bText = "Not Enough Funds!";
+                    bText = Localizer.Format("#TRPHire_Button_NotEnoughFunds"); 
                     hTest = false;
                     return bText;
                 }
                 if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
                 {
-                    bText = "Roster is Full!";
+                    bText = Localizer.Format("#TRPHire_Button_RosterFull");
                     hTest = false;
                 }
                 else
@@ -312,14 +331,14 @@ namespace Hire
             // 10 percent for dead and 5 percent for missing, note can only have dead in some career modes.
             foreach (ProtoCrewMember kerbal in roster.Crew)
             {
-                if (kerbal.rosterStatus.ToString() == "Dead")
+                if (kerbal.rosterStatus == ProtoCrewMember.RosterStatus.Dead)
                 {
                     if (kerbal.experienceTrait.Title == KCareerStrings[KCareer])
                     {
                         KDead += 1;
                     }
                 }
-                if (kerbal.rosterStatus.ToString() == "Missing")
+                if (kerbal.rosterStatus == ProtoCrewMember.RosterStatus.Missing)
                 {
                     if (kerbal.experienceTrait.Title == KCareerStrings[KCareer])
                     {
@@ -331,6 +350,7 @@ namespace Hire
 
         private void OnGUI()
         {
+
 
             GUI.skin = HighLogic.Skin;
             var roster = HighLogic.CurrentGame.CrewRoster;
@@ -353,7 +373,7 @@ namespace Hire
 
             GUILayout.BeginArea(_areaRect);
             {
-                GUILayout.Label("The Read Panda Placement Services Center"); // Testing Renaming Label Works
+                GUILayout.Label(Localizer.Format("#TRPHire_Title")); 
 
                 // Gender selection 
                 GUILayout.BeginHorizontal("box");
@@ -366,11 +386,11 @@ namespace Hire
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
                 {
-                    GUILayout.Label("Bulk hire Option: You can not hire any more kerbals at this time!");
+                    GUILayout.Label(Localizer.Format("#TRPHire_BulkHireNo"));
                 }
                 else
                 {
-                    GUILayout.Label("Bulk hire Selector: " + KBulki);
+                    GUILayout.Label(Localizer.Format("#TRPHire_BulkHireSelector") + ": " + KBulki);
                     KBulk = GUILayout.HorizontalSlider(KBulk, 1, cbulktest());
                     KBulki = Convert.ToInt32(KBulk);
                 }
@@ -378,34 +398,37 @@ namespace Hire
                 GUI.contentColor = basecolor;
                 GUILayout.EndVertical();
 
+                
+
                 // Courage Brains and BadS flag selections
                 GUILayout.BeginVertical("box");
-                GUILayout.Label("Courage:  " + Math.Truncate(KCourage));
+                GUILayout.Label(Courage + ":  " + Math.Truncate(KCourage));
                 KCourage = GUILayout.HorizontalSlider(KCourage, 0, 100);
-                GUILayout.Label("Stupidity:  " + Math.Truncate(KStupidity));
+                GUILayout.Label(Stupidity + ":  " + Math.Truncate(KStupidity));
                 KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Is this Kerbal Fearless?");
-                KFearless = GUILayout.Toggle(KFearless, "Fearless");
+                
+                GUILayout.Label(Localizer.Format("#TRPHire_IsFearless"));
+                KFearless = GUILayout.Toggle(KFearless, Badass);
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
 
                 // Level selection
                 GUILayout.BeginVertical("box");
-                GUILayout.Label("Select Kerbal's Level:");
+                GUILayout.Label(Localizer.Format("#TRPHire_SelectLevel"));
 
                 // If statements for level options
                 if (kerExp == false)
                 {
-                    GUILayout.Label("Level 5 - Mandatory for Career with no EXP enabled.");
+                    GUILayout.Label(Localizer.Format("#TRPHire_Level5CareerNoExp"));
                 }
                 else
                 {
                     if (ACLevel == 0) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsZero); }
                     if (ACLevel == 0.5) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne); }
                     if (ACLevel == 1) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo); }
-                    if (ACLevel == 5) { GUILayout.Label("Level 5 - Mandatory for Sandbox or Science Mode."); }
+                    if (ACLevel == 5) { GUILayout.Label(Localizer.Format("#TRPHire_Level5SandboxOrScience")); }
                 }
                 GUILayout.EndVertical();
 
@@ -415,16 +438,22 @@ namespace Hire
                     GUILayout.BeginVertical();
                     int cost = costMath();
                     //GUILayout.FlexibleSpace();
-                    string n = "";
+                    string rock = "";
                     if (Orbital.eclipseToday != null)
-                        n = Orbital.eclipseToday.displayName;
-                    if (n != "")
-                        if (n.Substring(n.Length - 2) == "^N")
-                            n = n.Substring(0, n.Length - 2);
-                    string msg = (
-                            (KDiscountOverFlow) ? "Max discount of " + HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount + "% reached!\n" : "")
-                            + (KDiscount != 0 ? (KNewYear ? "Happy New Year! " : "") + (KBlackMunday ? "Black Munday (" + n + ")! " : "") + "Your discount is " + KDiscount * 100 + " %\n" : "")
-                            + "Total Cost: " + cost;
+                        rock = Orbital.eclipseToday.displayName;
+                    if (rock != "")
+                        if (rock.Substring(rock.Length - 2, 1) == "^")
+                            rock = rock.Substring(0, rock.Length - 2);
+
+                    string MaxDiscount  = Localizer.Format("#TRPHire_MaxDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount) + "\n";
+                    string NewYear      = Localizer.Format("#TRPHire_NewYear") + " ";
+                    string BlackMunday  = Localizer.Format("#TRPHire_BlackMunday", rock) + " ";
+                    string YourDiscount = Localizer.Format("#TRPHire_YourDiscount", KDiscount * 100) + "\n";
+                    string TotalCost    = Localizer.Format("#TRPHire_TotalCost", cost);
+
+                    string msg = (KDiscountOverFlow ? MaxDiscount : "")
+                            + (KDiscount != 0 ? (KNewYear ? NewYear : "") + (KBlackMunday ? BlackMunday : "") + YourDiscount : "")
+                            + TotalCost;
                     if (cost <= Funding.Instance.Funds)
                     {
                         GUILayout.Label(msg, HighLogic.Skin.textField);
@@ -453,7 +482,7 @@ namespace Hire
                 }
                 if (!hTest)
                 {
-                    GUILayout.Button(hireStatus(out hTest), GUILayout.Width(200f));
+                    GUILayout.Button(hireStatus(out hTest), GUILayout.Width(250f));
                 }
 
                 GUILayout.FlexibleSpace();
