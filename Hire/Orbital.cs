@@ -98,7 +98,7 @@ namespace Hire
                 Vector3d bodyFromOrigin = GetPositionAtUT(rock,time) - opos;
                 Vector3d destFromOrigin = dpos - opos;
 
-                // ∠ Destination-Origin-Body should be <180
+                // ∠ Destination-Origin-Body should be <180°
                 if (Vector3d.Dot(bodyFromOrigin, destFromOrigin) <= 0)
                 {
 #if DEBUG
@@ -153,15 +153,12 @@ namespace Hire
                 double limbo = rock.Radius * 1.025; // Make it slightly larger
 
 #if DEBUG
-                Vector3d BOtime = GetPositionAtUT(rock,time) - opos;
-               // Vector3d BO = rock.position - opos;
-
-                double BOmtime = BOtime.magnitude;
-               // double BOm = BO.magnitude;
+                Vector3d BO = bodyFromOrigin;
+                double BOm = BO.magnitude;
                 double Or_r = bOrigin.Radius;
                 double De_r = bDestination.Radius;
 
-                double De_r_proj = De_r * ((BOmtime - Or_r) / (destFromOrigin.magnitude - Or_r)); // from surface of origin
+                double De_r_proj = De_r * ((BOm - Or_r) / (destFromOrigin.magnitude - Or_r)); // from surface of origin
                 double ratio = rr / De_r_proj;
 
                 // What is wrong there: while Mun circles around kerbin, distanse from kerbin don't changes. 
@@ -180,24 +177,21 @@ namespace Hire
                 // time: 5d 0:20, Mun,  ratio 1.1  latOffset.magn    2507.6k > 205.0k   BOtime.m 9.7M    BO.m 9.5M
                 // time: 5d 0:24, Mun,  ratio 1.2  latOffset.magn     179.3k < 205.0k   BOtime.m 9.4M    BO.m 9.1M
 
-                //Vector3d LOff = BO - Vector3d.Dot(BO, destFromOriginNorm) * destFromOriginNorm;
-                Vector3d LOffTime = BOtime - Vector3d.Dot(BOtime, destFromOriginNorm) * destFromOriginNorm;
+                Vector3d LOff = BO - Vector3d.Dot(BO, destFromOriginNorm) * destFromOriginNorm;
 
                 if (rock.name == "Mun" || (hour == 0 && minute == 0))
                 {
-                    Hire.Log.Info("bOrigin: " + bOrigin.name + "   bOrigin.pos: " + opos +  ", bDestination.pos: " + dpos  + ",    rock.position: " + GetPositionAtUT(rock,time) );
-                    Debug.Log(String.Format("time: {0} {1} ratio {2:f1}(>=1 for total eclipse) " +
-                        "loffT {3:f1}k    lim {4:f1}k  " +
-                        "BOt {5:f1}M    BOt-Or {6:f1}M   " +
-                        "Or_r {7:f1} De_r {8:f1}M R_r {9:f1}",
+                    //Hire.Log.Info("bOrigin: " + bOrigin.name + "   bOrigin.pos: " + opos +  ", bDestination.pos: " + dpos  + ",    rock.position: " + GetPositionAtUT(rock,time) );
+
+                    Debug.Log(String.Format("time: {0} {1} ratio {2:f1} " +
+                        "loff {3:f1}k    lim {4:f1}k  " +
+                        "BO-Or {5:f1}M   " +
+                        "Or_r {6:f0}k De_r {7:f0}M R_r {8:f0}k",
 
                         time_str, rock.name, ratio,
-
-                        LOffTime.magnitude / 1000, limbo / 1000,
-
-                        BOmtime / 1000000, (BOmtime - Or_r) / 1000000,
-
-                        Or_r, De_r / 1000000, rr));
+                        LOff.magnitude / 1000, limbo / 1000,
+                        (BOm - Or_r) / 1000000,
+                        Or_r/1000, De_r / 1000000, rr/1000));
 
                 }
 #endif
