@@ -56,3 +56,8 @@
 0.6.6
 	Added proper checks for eclipse, rather than relying on fixed numbers.
 	Now displays which body is doing the eclipse
+
+0.6.*
+	Updated orbital.cs with updated code from @yalov's dev branch
+	Fixed calculation of location to use ScaledSpace.LocalToScaledSpace
+
