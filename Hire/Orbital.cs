@@ -83,7 +83,6 @@ namespace Hire
 
             CelestialBody eclipser = null;
             double eclipserDistance = 0;
-            CelestialBody transit = null;
 
             // Cribbed with love from RemoteTech.  I have no head for vectors.
 
@@ -95,149 +94,120 @@ namespace Hire
                     continue;
 
 
-                Vector3d bodyFromOrigin = GetPositionAtUT(rock,time) - opos;
+                Vector3d rpos = GetPositionAtUT(rock, time) + opos; //rock.getPositionAtUT(time) + opos;
+
+                Vector3d rockFromOrigin = rpos - opos;
                 Vector3d destFromOrigin = dpos - opos;
 
-                // ∠ Destination-Origin-Body should be <180°
-                if (Vector3d.Dot(bodyFromOrigin, destFromOrigin) <= 0)
+                // I believe what math below is correct. Problem is in getting rpos, opos, dpos above and therefore bodyFromOrigin and destFromOrigin.
+                // It's something about global/local coordinates and centers of coordinate grids.
+                //
+                // RO, DO correspond to distance Mun-Kerbin and Sun-Kerbin, 
+                // therefore they should be constant all the time from 0:00 to 5:59 (for Mun) Otherwise code is wrong.
+                // ratio should be ~ 1 for Mun from 0:00 to 5:59.
+                //
+                // 
+                // It's became better with     rpos = GetPositionAtUT(rock, time) + opos     but not perfect.   
+                // For test run
+                //         0.8664 < ratio < 0.8719,        // I think it's really >0.95
+                //         12525k < RO < 12600k            // RO == AltitudeOfMun + Kerbin_radius = 11400,000 + 600,000 = 12,000,000
+                // 13,599,840,095 < DO < 13,599,840,101    // DO == altitudeOfKerbin + Sun_radius = 13,338,240,256 + 261,600,000 = 13,599,840,256. Complete.
+                //
+                // eclipse vs transit is about ratio
+
+                double RO = rockFromOrigin.magnitude;
+                double DO = destFromOrigin.magnitude;
+                double orad = bOrigin.Radius;
+                double drad = bDestination.Radius;
+                double rrad = rock.Radius;
+                
+                double drad_proj = drad * ((RO - orad) / (DO - orad)); // from surface of origin
+                double ratio = rrad / drad_proj;
+                const double RATIO_EDGE = 0.8; // should be 0.95 when math is correct. Now it is 0.8.
+
+                // is the body big enough for possible eclipse or it is possible transit
+                bool big_enough_for_eclipse = (ratio > RATIO_EDGE);
+
+                // ∠ Destination-Origin-Rock should be <180° for eclipse/transit
+                if (Vector3d.Dot(rockFromOrigin, destFromOrigin) <= 0)
                 {
 #if DEBUG
                     if (rock.name == "Mun" || (hour == 0 && minute == 0))
-                        Debug.Log("time: " + time_str + "  " + rock.name + " >180deg");
+                        Debug.Log("time: " + time_str + "  " + rock.name + " ratio="+ ratio.ToString("F4") + " >180deg");
 #endif
                     continue;
                 }
 
-                //  (why projection to origin-destination? body should be closer then destination.     
-                //  OT<OD, but OB>OD.  if OB>OD then there isn't eclipse)
-                //                                                                         Dest (sun)
-                //                                                                           |
-                //                                                                           |
-                //    Body (outher_planet)---------------------------------------------------|T
-                //                                                                          ||
-                //                                                                        Origin (kerbin)
-
-                /*
-                // projection to origin-destination
-                Vector3d destFromOriginNorm = destFromOrigin.normalized;
-                if (Vector3d.Dot(bodyFromOrigin, destFromOriginNorm) >= destFromOrigin.magnitude)
-                {
-                    continue;
-                }
-                */
-
-                // body should be closer then destination. OB>OD = no eclipse 
-                if (bodyFromOrigin.magnitude >= destFromOrigin.magnitude)
+                // body should be closer then destination. BO>DO = no eclipse/transit 
+                if (RO >= DO)
                 {
 #if DEBUG
                     if (rock.name == "Mun" || (hour == 0 && minute == 0))
-                        Debug.Log("time: " + time_str + "  " + rock.name + " rock futher then sun");
+                        Debug.Log("time: " + time_str + "  " + rock.name + " ratio=" + ratio.ToString("F4") + " rock futher then sun");
 #endif
-                    if (eclipseReq)
-                        continue;
-                    else
-                        transit = rock;
-                }
-
-
-                // is the body big enough?
-                double rr = rock.Radius;
-                double sr_proj = bDestination.Radius * ((bodyFromOrigin.magnitude - bOrigin.Radius) / (destFromOrigin.magnitude - bOrigin.Radius)); // from surface of origin
-                //if (rr < sr_proj)
-                //{
-                //    continue;
-                //}
+                    continue;
+                }                
 
                 Vector3d destFromOriginNorm = destFromOrigin.normalized;
-                Vector3d lateralOffset = bodyFromOrigin - Vector3d.Dot(bodyFromOrigin, destFromOriginNorm) * destFromOriginNorm;
+                Vector3d lateralOffset = rockFromOrigin - Vector3d.Dot(rockFromOrigin, destFromOriginNorm) * destFromOriginNorm;
                 double limbo = rock.Radius * 1.025; // Make it slightly larger
 
 #if DEBUG
-                Vector3d BO = bodyFromOrigin;
-                double BOm = BO.magnitude;
-                double Or_r = bOrigin.Radius;
-                double De_r = bDestination.Radius;
-
-                double De_r_proj = De_r * ((BOm - Or_r) / (destFromOrigin.magnitude - Or_r)); // from surface of origin
-                double ratio = rr / De_r_proj;
-
-                // What is wrong there: while Mun circles around kerbin, distanse from kerbin don't changes. 
-                // So 
-                //    BOtime.m = (rock.getPositionAtUT(time) - opos).magnitude 
-                // should not changes. And ratio for Mun should be near 1.
-
-                // P.S. Also 
-                //    BO.m = (rock.position - opos).magnitude 
-                // should change, because kerbin moves around sun in time, and rock.position don't correspont that. rock.getPositionAtUT(time) correspont.  
-
-                // time: 5d  0:1, Mun,  ratio 0.7  latOffset.magn   13555.2k > 205.0k   BOtime.m 16.2M   BO.m 16.1M
-                // time: 5d  0:5, Mun,  ratio 0.8  latOffset.magn   11231.0k > 205.0k   BOtime.m 14.4M   BO.m 14.4M
-                // time: 5d 0:10, Mun,  ratio 0.9  latOffset.magn    8324.6k > 205.0k   BOtime.m 12.3M   BO.m 12.3M
-                // time: 5d 0:15, Mun,  ratio 1.0  latOffset.magn    5416.8k > 205.0k   BOtime.m 10.7M   BO.m 10.7M
-                // time: 5d 0:20, Mun,  ratio 1.1  latOffset.magn    2507.6k > 205.0k   BOtime.m 9.7M    BO.m 9.5M
-                // time: 5d 0:24, Mun,  ratio 1.2  latOffset.magn     179.3k < 205.0k   BOtime.m 9.4M    BO.m 9.1M
-
-                Vector3d LOff = BO - Vector3d.Dot(BO, destFromOriginNorm) * destFromOriginNorm;
-
                 if (rock.name == "Mun" || (hour == 0 && minute == 0))
                 {
                     //Hire.Log.Info("bOrigin: " + bOrigin.name + "   bOrigin.pos: " + opos +  ", bDestination.pos: " + dpos  + ",    rock.position: " + GetPositionAtUT(rock,time) );
 
-                    Debug.Log(String.Format("time: {0} {1} ratio {2:f1} " +
+                    Debug.Log(String.Format("time: {0} {1} ratio {2:f4}   " +
                         "loff {3:f1}k    lim {4:f1}k  " +
-                        "BO-Or {5:f1}M   " +
-                        "Or_r {6:f0}k De_r {7:f0}M R_r {8:f0}k",
+                        "RO {5:f0}   DO {6:f0}   " +
+                       // "Rads {7:f0}k {8:f0}M {9:f0}k   " +
+                        "Opos {10:f0} Dpos {11:f0}k Rpos {12:f0}",
 
                         time_str, rock.name, ratio,
-                        LOff.magnitude / 1000, limbo / 1000,
-                        (BOm - Or_r) / 1000000,
-                        Or_r/1000, De_r / 1000000, rr/1000));
-
+                        lateralOffset.magnitude / 1000, limbo / 1000,
+                        RO, DO,
+                        orad /1000, drad / 1000000, rrad/1000,
+                        opos.magnitude, dpos.magnitude / 1000, rpos.magnitude));
                 }
 #endif
 
-
-                //Debug.Log("time: " + time + ".  rock: "+  rock.name + ",   limbo: " + limbo + ",   lateralOffset: " + lateralOffset.magnitude);
-
-                // is the body really between destination and origin?
+                // is the body between destination and origin (eclipse/transit)  
                 if (lateralOffset.magnitude < limbo)
                 {
+
+                    if (big_enough_for_eclipse || !eclipseReq)
+                    {
 #if DEBUG
-                    if (transit != null)
-                        Hire.Log.Info("Transit found at " + time_str);
-                    else
-                        Debug.Log("Eclipse found at " + time_str);
+                        if (big_enough_for_eclipse) Hire.Log.Info("Eclipse found at " + time_str);
+                        if (!big_enough_for_eclipse && !eclipseReq) Hire.Log.Info("Transit found at " + time_str);
 #endif
+                        if (relative == Relative.any)
+                            return rock;
 
-                    //
-                    // Code for determining transits is not yet completed
-                    //
-                    if (relative == Relative.any)
-                        return rock;
-                    bool useThis = true;
-                    if (eclipser != null)
-                    {
-                        if (relative == Relative.closest)
+                        bool useThis = true;
+                        if (eclipser != null)
                         {
-                            if (bodyFromOrigin.magnitude > eclipserDistance)
+                            if (relative == Relative.closest)
                             {
-                                useThis = false;
+                                if (rockFromOrigin.magnitude > eclipserDistance)
+                                {
+                                    useThis = false;
+                                }
+                            }
+                            else  // Relative.furthest
+                            {
+                                if (rockFromOrigin.magnitude < eclipserDistance)
+                                {
+                                    useThis = false;
+                                }
+
                             }
                         }
-                        else
+                        if (useThis)
                         {
-                            if (bodyFromOrigin.magnitude > eclipserDistance)
-                            {
-                                useThis = false;
-                            }
-
+                            eclipser = rock;
+                            eclipserDistance = rockFromOrigin.magnitude;
                         }
-                    }
-                    if (useThis)
-                    {
-                        eclipser = rock;
-                        eclipserDistance = bodyFromOrigin.magnitude;
-
                     }
                 }
             }
