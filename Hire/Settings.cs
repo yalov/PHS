@@ -110,6 +110,10 @@ namespace Hire
             toolTip = "#TRPHire_Settings_FearlessTooltip")]
         public double fearless_coef = 2f;
 
+        [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_Veteran", minValue = 5.0f, maxValue = 15f, displayFormat = "N1",
+    toolTip = "#TRPHire_Settings_VeteranTooltip")]
+        public double veteran_coef = 10f;
+
         [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_LevelUp", minValue = 0.0f, maxValue = 3f, displayFormat = "N2",
             toolTip = "#TRPHire_Settings_LevelUpTooltip")]
         public double levelup_coef = 1f;
@@ -118,11 +122,8 @@ namespace Hire
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             DefaultSettings = false;
-#if false
-            low_quality = 0.5f;
-            high_quality = 2f;
-#endif
             fearless_coef = 2f;
+            veteran_coef = 10f;
             gender_coef = 1.25f;
             levelup_coef = 1f;
         }

@@ -28,6 +28,8 @@ namespace Hire
         private static float KStupidity = 50;
         private static float KCourage = 50;
         private static bool KFearless = false;
+        private static bool KVeteran = false;
+
         private static double KDiscount = 0;
         private static bool KDiscountOverFlow = false;
         private static bool KBlackMunday = false;
@@ -46,6 +48,8 @@ namespace Hire
         private string[] KLevelStringsOne = new string[2] { Level + " 0", Level + " 1" };
         private string[] KLevelStringsTwo = new string[3] { Level + " 0", Level + " 1", Level + " 2" };
         private string[] KLevelStringsAll = new string[6] { Level + " 0", Level + " 1", Level + " 2", Level + " 3", Level + " 4", Level + " 5" };
+
+        private string[,] KNames = new string[3,10];
 
         private static string Male = Localizer.Format("#autoLOC_900434");
         private static string Female = Localizer.Format("#autoLOC_900444");
@@ -87,6 +91,15 @@ namespace Hire
             _guiPivot = new Vector2(_areaRect.x, _areaRect.y);
             _guiScalar = new Vector2(GameSettings.UI_SCALE, GameSettings.UI_SCALE);
 
+            //var applicants = HighLogic.CurrentGame.CrewRoster.Applicants.ToList();
+            var rand = new System.Random();
+            for (int i = 0; i < 10; i++)
+            {
+                KNames[0, i] = CrewGenerator.GetRandomName(ProtoCrewMember.Gender.Male, rand);
+                KNames[1, i] = CrewGenerator.GetRandomName(ProtoCrewMember.Gender.Female, rand);
+                KNames[2, i] = (rand.Next() % 2 == 0) ? KNames[0, i] : KNames[1, i];
+            }
+
             enabled = true;
         }
 
@@ -102,6 +115,8 @@ namespace Hire
             for (int i = 0; i < KBulki; i++)
             {
                 ProtoCrewMember newKerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+
+                newKerb.ChangeName(KNames[KGender, i]);
 
                 switch (KGender) // Sets gender
                 {
@@ -132,6 +147,12 @@ namespace Hire
                 {
                     newKerb.isBadass = true;
                 }
+
+                if (KVeteran)
+                {
+                    newKerb.veteran = true;
+                }
+
                 // Hire.Log.Info("PSH :: Status set to Available, courage and stupidity set, fearless trait set.");
 
                 if (KLevel == 1)
@@ -203,6 +224,10 @@ namespace Hire
                 if (KFearless == true)
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef;
 
+                if (KVeteran == true)
+                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().veteran_coef;
+
+
                 if (KGender != 2)
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().gender_coef;
 
@@ -258,9 +283,7 @@ namespace Hire
                     {
                         KBlackMunday = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
-                    }
-
-                    
+                    }               
 #endif
                     int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
                     if (days_in_year - day_of_year < 3)
@@ -289,6 +312,22 @@ namespace Hire
         private static readonly GUILayoutOption[] StatOptions = { GUILayout.MaxWidth(100f) };
         private static readonly GUILayoutOption[] FlavorTextOptions = { GUILayout.MaxWidth(200f) };
 
+        private bool isNameConflict()
+        {
+            //checking for all Crew: Missing, Dead, Available, Assigned
+
+            foreach (ProtoCrewMember kerbal in roster.Crew)
+            {
+                for (int i = 0; i < KBulki; i++)
+                {
+                    if (kerbal.name == KNames[KGender, i])
+                        return true;
+                }
+            }
+            return false;
+        }
+
+
         private string hireStatus( out bool hTest)
         {
 
@@ -301,11 +340,15 @@ namespace Hire
                 {
                     bText = Localizer.Format("#TRPHire_Button_NotEnoughFunds"); 
                     hTest = false;
-                    return bText;
                 }
-                if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
+                else if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
                 {
                     bText = Localizer.Format("#TRPHire_Button_RosterFull");
+                    hTest = false;
+                }
+                else if (isNameConflict())
+                {
+                    bText = Localizer.Format("#TRPHire_Button_NameConflict");
                     hTest = false;
                 }
                 else
@@ -387,6 +430,8 @@ namespace Hire
                 if (cbulktest() < 1)
                 {
                     GUILayout.Label(Localizer.Format("#TRPHire_BulkHireNo"));
+                    KBulk = 0;
+                    KBulki = 0;
                 }
                 else
                 {
@@ -395,10 +440,40 @@ namespace Hire
                     KBulki = Convert.ToInt32(KBulk);
                 }
 
+
+
                 GUI.contentColor = basecolor;
                 GUILayout.EndVertical();
 
-                
+                if (KBulki > 0)
+                {
+                    GUIStyle style = new GUIStyle(HighLogic.Skin.label);
+                    style.normal.textColor = Color.white;
+                    style.active.textColor = Color.white;
+                    style.focused.background = null;
+
+                    GUILayout.BeginHorizontal();
+
+                    GUILayout.BeginVertical(GUILayout.Width(_areaRect.width * 0.48f));
+                    for (int i = 0; i < KBulki; i += 2)
+                    {
+                        KNames[KGender, i] = GUILayout.TextField(KNames[KGender, i], style);
+                    }
+                    GUILayout.EndVertical();
+
+                    if (KBulki > 1)
+                    {
+                        GUILayout.BeginVertical(GUILayout.Width(_areaRect.width * 0.48f));
+                        for (int i = 1; i < KBulki; i += 2)
+                        {
+                            KNames[KGender, i] = GUILayout.TextArea(KNames[KGender, i], style);
+                        }
+                        GUILayout.EndVertical();
+                    }
+
+                    GUILayout.EndHorizontal();
+                }
+
 
                 // Courage Brains and BadS flag selections
                 GUILayout.BeginVertical("box");
@@ -408,9 +483,13 @@ namespace Hire
                 KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
 
                 GUILayout.BeginHorizontal();
-                
                 GUILayout.Label(Localizer.Format("#TRPHire_IsFearless"));
                 KFearless = GUILayout.Toggle(KFearless, Badass);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(Localizer.Format("#TRPHire_IsVeteran"));
+                KVeteran = GUILayout.Toggle(KVeteran, Veteran);
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
 
