@@ -35,7 +35,9 @@ namespace Hire
 
 
                 // For now, check at 1 minute intervals
+#if DEBUG
                 Debug.Log("currentDay: " + currentDay + ",  lastDayChecked: " + lastDayChecked);
+#endif
                 for (double checkTime = currentDay; checkTime < endOfDay; checkTime += 60f)
                 {
                     // The chances of two bodies starting an eclipse at the same time are minimal
@@ -75,10 +77,10 @@ namespace Hire
         public static CelestialBody HasClearPath(double time, CelestialBody bOrigin, CelestialBody bDestination, Relative relative, bool eclipseReq = true)
         {
 #if DEBUG
-            int day = (int)(time / SecsPerDay);
-            int hour = (int)((time - (day * SecsPerDay)) / 3600);
-            int minute = (int)((time - (day * SecsPerDay) - hour * 3600) / 60);
-            string time_str = (day + 1) + " day, " + hour.ToString("D2") + ":" + minute.ToString("D2");
+            int day    = (int)(time / SecsPerDay);
+            int hour   = (int)(time % SecsPerDay / 3600);
+            int minute = (int)(time % 3600 / 60);
+            string time_str = (day + 1) + "d " + hour.ToString("D2") + ":" + minute.ToString("D2");
 #endif
 
             CelestialBody eclipser = null;
@@ -93,7 +95,6 @@ namespace Hire
                 if (rock == bOrigin || rock == bDestination)
                     continue;
 
-
                 Vector3d rpos = GetPositionAtUT(rock, time) + opos; //rock.getPositionAtUT(time) + opos;
 
                 Vector3d rockFromOrigin = rpos - opos;
@@ -102,16 +103,19 @@ namespace Hire
                 // I believe what math below is correct. Problem is in getting rpos, opos, dpos above and therefore bodyFromOrigin and destFromOrigin.
                 // It's something about global/local coordinates and centers of coordinate grids.
                 //
-                // RO, DO correspond to distance Mun-Kerbin and Sun-Kerbin, 
-                // therefore they should be constant all the time from 0:00 to 5:59 (for Mun) Otherwise code is wrong.
+                // RO, DO corresponds to distances Mun-Kerbin and Sun-Kerbin (Rock-Origin and Destination-Origin) 
+                // therefore they should be constant all the time from 0:00 to 5:59 (for Mun).
                 // ratio should be ~ 1 for Mun from 0:00 to 5:59.
                 //
-                // 
-                // It's became better with     rpos = GetPositionAtUT(rock, time) + opos     but not perfect.   
-                // For test run
-                //         0.8664 < ratio < 0.8719,        // I think it's really >0.95
-                //         12525k < RO < 12600k            // RO == AltitudeOfMun + Kerbin_radius = 11400,000 + 600,000 = 12,000,000
-                // 13,599,840,095 < DO < 13,599,840,101    // DO == altitudeOfKerbin + Sun_radius = 13,338,240,256 + 261,600,000 = 13,599,840,256. Complete.
+                // Eclipse time for 5d should not change.
+                //  
+                // For test run at 5d 02:10, eclipse found at 5d 04:40, 
+                // for             5d 04:01, eclipse found at 5d 04:11
+
+                // for test run at 5d 02:10:
+                //    0.8664 < ratio < 0.8741,      // I think it should be >0.95 and certainly const
+                //    12494k < RO < 12600k          // RO == AltitudeOfMun + Kerbin_radius = 11400,000 + 600,000 = 12,000,000
+                //    DO = 13,599,839,970           // DO == altitudeOfKerbin + Sun_radius = 13,338,240,256 + 261,600,000 = 13,599,840,256.
                 //
                 // eclipse vs transit is about ratio
 
@@ -178,9 +182,15 @@ namespace Hire
                     if (big_enough_for_eclipse || !eclipseReq)
                     {
 #if DEBUG
-                        if (big_enough_for_eclipse) Hire.Log.Info("Eclipse found at " + time_str);
-                        if (!big_enough_for_eclipse && !eclipseReq) Hire.Log.Info("Transit found at " + time_str);
+                        int now_d = (int)(Planetarium.GetUniversalTime() / SecsPerDay);
+                        int now_h = (int)(Planetarium.GetUniversalTime() % SecsPerDay / 3600);
+                        int now_m = (int)(Planetarium.GetUniversalTime() % 3600 / 60);
+                        string now_str = "It is " + (now_d+1) + "d " + now_h.ToString("D2") + ":" + now_m.ToString("D2") + " now. ";
+
+                        if (big_enough_for_eclipse) Hire.Log.Info(now_str+ "Eclipse found at " + time_str);
+                        if (!big_enough_for_eclipse && !eclipseReq) Hire.Log.Info(now_str + "Transit found at " + time_str);
 #endif
+
                         if (relative == Relative.any)
                             return rock;
 
