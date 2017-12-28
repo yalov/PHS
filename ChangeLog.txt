@@ -1,14 +1,32 @@
-﻿0.6.2
-		Initial rebuild for KSP 1.3
-		Added standardized build scripts
-		Added AssemblyVersion.tt
-		Added .version file	
-		Broke single file out into several files
-		Added Log.cs
-		Changed all logging to using standardized Log class
+﻿0.6.7.1
+	Veteran Cost Modifier (Orange Suit)
 
-0.6.3
-		Updated for KSP 1.3.1
+    Showing Kerbals' Names.
+    Update comment in orbital.cs
+
+0.6.7
+	Updated orbital.cs with updated code from @yalov's dev branch - much better math results for eclipse (RO, DO, ratio). EclipseReq.
+	Split localization into individual files
+
+0.6.6
+	Added proper checks for eclipse, rather than relying on fixed numbers.
+	Now displays which body is doing the eclipse
+
+0.6.5
+	Fixed compatibility with Kopernicus, thanks @Galileo for reporting and @Sigma88 for providing a better fix than what I had 
+	Fixed error where a kerbal could be  hired even if there weren't enough funds
+
+0.6.4.1
+	Fixed Logging code to eliminate endless loop
+	Moved the following initializers out of the disableAllModifiers if block:
+	        KDiscount
+            KBlackMunday 
+            KNewYear
+	Added Max Allowable Discount to settings
+	Added some tool tips in the settings
+	Rewrote messages to eliminate duplication of code
+	Put low and high quality modifiers onto first settings section
+	Thanks to forum user @flart (github user @yalov) for most of these changes
 
 0.6.4
 	Following changes submitted by @yalov:
@@ -36,28 +54,27 @@
 		Removed the Stock Center button and put it into the Settings page
 		Made all new settings fully configurable
 		Added Disable All Modifiers
+0.6.3
+		Updated for KSP 1.3.1
 
-0.6.4.1
-	Fixed Logging code to eliminate endless loop
-	Moved the following initializers out of the disableAllModifiers if block:
-	        KDiscount
-            KBlackMunday 
-            KNewYear
-	Added Max Allowable Discount to settings
-	Added some tool tips in the settings
-	Rewrote messages to eliminate duplication of code
-	Put low and high quality modifiers onto first settings section
-	Thanks to forum user @flart (github user @yalov) for most of these changes
+0.6.2
+		Initial rebuild for KSP 1.3
+		Added standardized build scripts
+		Added AssemblyVersion.tt
+		Added .version file	
+		Broke single file out into several files
+		Added Log.cs
+		Changed all logging to using standardized Log class
 
-0.6.5
-	Fixed compatibility with Kopernicus, thanks @Galileo for reporting and @Sigma88 for providing a better fix than what I had 
-	Fixed error where a kerbal could be  hired even if there weren't enough funds
 
-0.6.6
-	Added proper checks for eclipse, rather than relying on fixed numbers.
-	Now displays which body is doing the eclipse
 
-0.6.7
-	Updated orbital.cs with updated code from @yalov's dev branch
-	Fixed calculation of location to use ScaledSpace.LocalToScaledSpace
+
+
+
+
+
+
+
+
+
 
