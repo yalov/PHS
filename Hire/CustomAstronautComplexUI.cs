@@ -35,11 +35,7 @@ namespace Hire
         private static bool KBlackMunday = false;
         private static bool KNewYear = false;
         private static int KCareer = 0;
-        private static string Pilot = Localizer.Format("#autoLOC_900433");
-        private static string Engineer = Localizer.Format("#autoLOC_900439");
-        private static string Scientist = Localizer.Format("#autoLOC_900442");
 
-        private string[] KCareerStrings = { Pilot, Scientist, Engineer };
         private static int KLevel = 0;
         private float Krep = Reputation.CurrentRep;
         private static string Level = Localizer.Format("#autoLOC_6002246");
@@ -72,7 +68,7 @@ namespace Hire
         private bool hTest = true;
         private bool hasKredits = true;
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
-
+        private Traits traits = null;
 
         public void Initialize(Rect guiRect)
         {
@@ -101,6 +97,9 @@ namespace Hire
             }
 
             enabled = true;
+
+            traits = new Traits();
+   
         }
 
         private void kHire()
@@ -125,14 +124,8 @@ namespace Hire
                     case 2: break;
                     default: break;
                 }
-                string career = "";
-                switch (KCareer) // Sets career
-                {
-                    case 0: career = "Pilot"; break;
-                    case 1: career = "Scientist"; break;
-                    case 2: career = "Engineer"; break;
-                    default: break;// throw an error?
-                }
+
+                string career = traits.KCareerStrings[KCareer];
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
 
@@ -376,14 +369,14 @@ namespace Hire
             {
                 if (kerbal.rosterStatus == ProtoCrewMember.RosterStatus.Dead)
                 {
-                    if (kerbal.experienceTrait.Title == KCareerStrings[KCareer])
+                    if (kerbal.experienceTrait.Title == traits.KCareerStrings[KCareer])
                     {
                         KDead += 1;
                     }
                 }
                 if (kerbal.rosterStatus == ProtoCrewMember.RosterStatus.Missing)
                 {
-                    if (kerbal.experienceTrait.Title == KCareerStrings[KCareer])
+                    if (kerbal.experienceTrait.Title == traits.KCareerStrings[KCareer])
                     {
                         KDead += 0.5;
                     }
@@ -393,8 +386,6 @@ namespace Hire
 
         private void OnGUI()
         {
-
-
             GUI.skin = HighLogic.Skin;
             var roster = HighLogic.CurrentGame.CrewRoster;
             GUIContent[] KGendArray = new GUIContent[3] { KMale, KFemale, KGRandom };
@@ -425,7 +416,7 @@ namespace Hire
 
                 // Career selection
                 GUILayout.BeginVertical("box");
-                KCareer = GUILayout.Toolbar(KCareer, KCareerStrings);
+                KCareer = GUILayout.SelectionGrid(KCareer, traits.KCareerGrid, traits.KCareerCnt);
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
                 {

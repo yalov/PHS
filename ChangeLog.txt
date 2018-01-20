@@ -1,4 +1,8 @@
-﻿0.6.7.1
+﻿0.6.8
+	Added support for various Community Traits
+	Added support for Community Trait Icons
+
+0.6.7.1
 	Veteran Cost Modifier (Orange Suit)
 
     Showing Kerbals' Names.

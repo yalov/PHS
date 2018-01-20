@@ -17,7 +17,7 @@ namespace Hire
             DETAIL = 4,
             TRACE = 5
         };
-        string PREFIX = "";
+        string PREFIX = "TRP-Hire";
 
         public void setTitle(string t)
         {

@@ -37,6 +37,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="CTIWrapper.cs" />
     <Compile Include="CustomAstronautComplexUISpawner.cs" />
     <Compile Include="CustomAstronautComplexUI.cs" />
     <Compile Include="Hire.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="Orbital.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Traits.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
