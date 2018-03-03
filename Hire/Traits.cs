@@ -12,7 +12,6 @@ namespace Hire
 
     public class Traits
     {
-        internal List<string> traits = new List<string>();
         internal string[] KCareerStrings;
         internal int KCareerCnt = 0;
         internal GUIContent[] KCareerGrid;
@@ -27,38 +26,7 @@ namespace Hire
                 return Localizer.Format("#autoLOC_500103");
             if (s == "Scientist")
                 return Localizer.Format("#autoLOC_500105");
-
-            if (s == "Unknown")
-                return Localizer.Format("#autoLOC_168872");
-            if (s == "Tourist")
-                return Localizer.Format("#autoLOC_476080");
-
-            // The following is from the Community Trait Icons mod
-            if (s == "Colonist")
-                return Localizer.Format("#TRPHire_Colonist");
-            if (s == "Geologist")
-                return Localizer.Format("#TRPHire_Geologist");
-            if (s == "Miner")
-                return Localizer.Format("#TRPHire_Miner");
-            if (s == "Mechanic")
-                return Localizer.Format("#TRPHire_Mechanic");
-            if (s == "Technician")
-                return Localizer.Format("#TRPHire_Technician");
-            if (s == "Biologist")
-                return Localizer.Format("#TRPHire_Biologist");
-            if (s == "Farmer")
-                return Localizer.Format("#TRPHire_Farmer");
-            if (s == "Medic")
-                return Localizer.Format("#TRPHire_Medic");
-            if (s == "Quartermaster")
-                return Localizer.Format("#TRPHire_Quartermaster");
-            if (s == "Kolonist")
-                return Localizer.Format("#TRPHire_Kolonist");
-            if (s == "Scout")
-                return Localizer.Format("#TRPHire_Scout");
-
-
-            return Localizer.Format(s);
+            return Localizer.Format(traitTitles[s].title);
 
         }
         public Traits()
@@ -66,15 +34,16 @@ namespace Hire
             InitTraits();
             CTIWrapper.initCTIWrapper();
 
-            KCareerStrings = new string[traits.Count()];
-            for (int i = 0; i < traits.Count(); i++)
+            KCareerStrings = new string[traitTitles.Count()];
+            int i = 0;
+            foreach (var tt in traitTitles.Values)
             {
-                KCareerStrings[i] = traits[i];
+                KCareerStrings[i++] = tt.name;
             }
 
             KCareerCnt = Math.Min(4, KCareerStrings.Count());
             KCareerGrid = new GUIContent[KCareerCnt];
-            for (int i = 0; i < KCareerCnt; i++)
+            for (i = 0; i < KCareerCnt; i++)
             {
                 GUIContent gc;
                 if (CTIWrapper.CTI != null && CTIWrapper.CTI.Loaded)
@@ -94,6 +63,18 @@ namespace Hire
 
         }
 
+        public class TraitTitle
+        {
+            public string name;
+            public string title;
+
+            public TraitTitle(string n, string t)
+            {
+                name = n;
+                title = t;
+            }
+        }
+        Dictionary<string, TraitTitle> traitTitles = new Dictionary<string, TraitTitle>();
 
         public void InitTraits()
         {
@@ -101,25 +82,23 @@ namespace Hire
             {
                 Loaded = true;
 
-                ExperienceSystemConfig esc = new ExperienceSystemConfig();
-
-                esc.LoadTraitConfigs();
-
-
-                foreach (var s in esc.TraitNames)
+                ConfigNode[] configNodes = GameDatabase.Instance.GetConfigNodes("EXPERIENCE_TRAIT");
+                for (int i = 0; i < configNodes.Count(); i++)
                 {
-                    traits.Add(s);
-                }
-
-                int cnt = traits.Count();
-                for (int i = 0; i < cnt; i++)
-                    if (traits[i] == "Tourist" || traits[i] == "Unknown")
+                    ExperienceTraitConfig experienceTraitConfig = ExperienceTraitConfig.Create(configNodes[i]);
+                    if (experienceTraitConfig != null)
                     {
-                        traits.Remove(traits[i]);
-                        cnt--;
-                        i--;
+                        TraitTitle tt;
+                        if (experienceTraitConfig.Name != null)
+                            {
+                            if (experienceTraitConfig.Title != null)
+                                tt = new TraitTitle(experienceTraitConfig.Name, experienceTraitConfig.Title);
+                            else
+                                tt = new TraitTitle(experienceTraitConfig.Name, experienceTraitConfig.Name);
+                            traitTitles.Add(experienceTraitConfig.Name, tt);
+                        }
                     }
-
+                }
             }
         }
     }
