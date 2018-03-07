@@ -89,7 +89,9 @@ namespace Hire
                     if (experienceTraitConfig != null)
                     {
                         TraitTitle tt;
-                        if (experienceTraitConfig.Name != null)
+                        if (experienceTraitConfig.Name != null
+                             && experienceTraitConfig.Name != "Tourist" && experienceTraitConfig.Name != "Unknown")
+                            
                             {
                             if (experienceTraitConfig.Title != null)
                                 tt = new TraitTitle(experienceTraitConfig.Name, experienceTraitConfig.Title);

@@ -1,4 +1,7 @@
-﻿0.6.8.2
+﻿0.6.8.3
+	Removed Tourist from selection of available traits
+
+0.6.8.2
 	Removed custom text and added code to use the data in the EXPERIENCE_TRAIT  config nodes
 
 0.6.8.1
