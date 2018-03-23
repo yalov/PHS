@@ -1,4 +1,7 @@
-﻿0.6.8.3
+﻿-.6.8.4
+	Updated for KSP 1.4.1
+
+0.6.8.3
 	Removed Tourist from selection of available traits
 
 0.6.8.2

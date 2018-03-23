@@ -22,7 +22,7 @@
 
 # 3:SOURCEFILE, DESTDIR
 3:TRP-Hire.version,GameData/TRP-Hire
-3:TRP-License.txt,GameData/TRP-Hire
+3:License.txt,GameData/TRP-Hire
 
 # 4:SOURCDIR, DESTDIR
 #4:Textures,GameData/ManeuverQueue/Textures
