@@ -1,5 +1,6 @@
-﻿-.6.8.4
+﻿0.6.8.4
 	Updated for KSP 1.4.1
+	fix names bug in the random gender tab
 
 0.6.8.3
 	Removed Tourist from selection of available traits
