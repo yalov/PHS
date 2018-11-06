@@ -1,4 +1,7 @@
-﻿0.6.8.6
+﻿0.6.8.7
+	Version bump for 1.5 rebuild
+
+0.6.8.6
 	 forum user @LeLeon did the  German translation
 
 0.6.8.5
