@@ -1,4 +1,10 @@
-﻿0.6.8.7
+﻿0.6.8.8
+	Added to methods for compatibiility with other mods:
+		GameEvents.onKerbalAdded // old gameevent most likely to be used by other mods
+		GameEvents.onKerbalAddComplete // new gameevent that seems relevant
+	Removed max version from .version file
+
+0.6.8.7
 	Version bump for 1.5 rebuild
 
 0.6.8.6

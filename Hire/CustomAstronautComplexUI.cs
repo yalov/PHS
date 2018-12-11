@@ -173,13 +173,16 @@ namespace Hire
                     newKerb.experienceLevel = 5;
                     Hire.Log.Info("KSI :: Level set to 5 - Non-Career Mode default.");
                 }
-
-
+                GameEvents.onKerbalAdded.Fire(newKerb); // old gameevent most likely to be used by other mods
+                GameEvents.onKerbalAddComplete.Fire(newKerb); // new gameevent that seems relevant
             }
             // Refreshes the AC so that new kerbal shows on the available roster.
             Hire.Log.Info("PSH :: Hiring Function Completed.");
+           
+
             GameEvents.onGUIAstronautComplexDespawn.Fire();
             GameEvents.onGUIAstronautComplexSpawn.Fire();
+            
 
         }
 
