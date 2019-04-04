@@ -1,4 +1,7 @@
-﻿0.6.8.8
+﻿0.6.8.10
+	Minor internal update for 1.7
+
+0.6.8.9
 	Added to methods for compatibiility with other mods:
 		GameEvents.onKerbalAdded // old gameevent most likely to be used by other mods
 		GameEvents.onKerbalAddComplete // new gameevent that seems relevant
