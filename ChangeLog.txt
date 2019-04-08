@@ -1,4 +1,22 @@
-﻿0.6.8.10
+﻿0.6.9
+	Thanks to @cake-pie for this:
+	Traits.cs
+
+		obtain traits' name (id) & title (display) from ExperienceConfigs already present in GameDatabase instead of fetching raw from config nodes
+		remove special case handling that excludes "Unknown"; this probably being leftover artifact from previous attempt that parsed data from CommunityTraitIcons' config file and thus no longer needed
+		store traitTitles as List instead of Dictionary
+		remove redundant KCareerStrings
+		rename KCareerCnt to KCareerPerRow for clarity: this is the number of careers to show per line of the SelectionGrid and not the number of careers installed in the game
+		fix KCareerGrid size to number of careers instead of incorrect KCareerCnt, for loop counter fixed to match
+		remove unnecessary localization code. TraitTitle.title is already localized (if localization is available) when we obtain it
+	
+	CustomAstronautComplexUI.cs
+
+		updated to account for changes in Traits.cs
+		use identifiers instead of display strings for checking ProtoCrewMember's trait
+		use pcm.experienceTrait.Config.Name instead of pcm.experienceTrait.TypeName and pcm.experienceTrait.Title. See here for info.
+
+0.6.8.10
 	Minor internal update for 1.7
 
 0.6.8.9
