@@ -128,12 +128,12 @@ namespace Hire
                     default: break;
                 }
 
-                string career = traits.KCareerStrings[KCareer];
+                string career = traits.traitTitles[KCareer].name;
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
 
                 // Hire.Log.Info("KSI :: KIA MIA Stat is: " + KDead);
-                // Hire.Log.Info("KSI :: " + newKerb.experienceTrait.TypeName + " " + newKerb.name + " has been created in: " + loopcount.ToString() + " loops.");
+                // Hire.Log.Info("KSI :: " + newKerb.experienceTrait.Config.Name + " " + newKerb.name + " has been created in: " + loopcount.ToString() + " loops.");
                 newKerb.rosterStatus = ProtoCrewMember.RosterStatus.Available;
                 newKerb.experience = 0;
                 newKerb.experienceLevel = 0;
@@ -375,14 +375,14 @@ namespace Hire
             {
                 if (kerbal.rosterStatus == ProtoCrewMember.RosterStatus.Dead)
                 {
-                    if (kerbal.experienceTrait.Title == traits.KCareerStrings[KCareer])
+                    if (kerbal.experienceTrait.Config.Name == traits.traitTitles[KCareer].name)
                     {
                         KDead += 1;
                     }
                 }
                 if (kerbal.rosterStatus == ProtoCrewMember.RosterStatus.Missing)
                 {
-                    if (kerbal.experienceTrait.Title == traits.KCareerStrings[KCareer])
+                    if (kerbal.experienceTrait.Config.Name == traits.traitTitles[KCareer].name)
                     {
                         KDead += 0.5;
                     }
@@ -422,7 +422,7 @@ namespace Hire
 
                 // Career selection
                 GUILayout.BeginVertical("box");
-                KCareer = GUILayout.SelectionGrid(KCareer, traits.KCareerGrid, traits.KCareerCnt);
+                KCareer = GUILayout.SelectionGrid(KCareer, traits.KCareerGrid, traits.KCareerPerRow);
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
                 {
