@@ -1,4 +1,8 @@
-﻿0.6.9
+﻿0.6.9.1
+	Thanks to @TonkaCrash for this:
+		Fixed scaling issue
+
+0.6.9
 	Thanks to @cake-pie for this:
 	Traits.cs
 
