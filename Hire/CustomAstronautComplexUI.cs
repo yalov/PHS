@@ -517,6 +517,7 @@ namespace Hire
                         GUILayout.Label(Localizer.Format("#TRPHire_Level5CareerNoExp"));
                     else
                         GUILayout.Label(Localizer.Format("#TRPHire_Level5SandboxOrScience"));
+                    KLevel = 5;
                 }
                 else
                 {
