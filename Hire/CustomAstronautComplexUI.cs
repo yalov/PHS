@@ -159,6 +159,30 @@ namespace Hire
                     newKerb.experienceLevel = 2;
                     // Hire.Log.Info("KSI :: Level set to 2.");
                 }
+                if (KLevel == 3)
+                {
+                    newKerb.flightLog.AddEntry("Training3," + FlightGlobals.GetHomeBodyName());
+                    newKerb.ArchiveFlightLog();
+                    newKerb.experience = 16;
+                    newKerb.experienceLevel = 3;
+                    // Hire.Log.Info("KSI :: Level set to 3.");
+                }
+                if (KLevel == 4)
+                {
+                    newKerb.flightLog.AddEntry("Training4," + FlightGlobals.GetHomeBodyName());
+                    newKerb.ArchiveFlightLog();
+                    newKerb.experience = 32;
+                    newKerb.experienceLevel = 4;
+                    // Hire.Log.Info("KSI :: Level set to 4.");
+                }
+                if (KLevel == 5)
+                {
+                    newKerb.flightLog.AddEntry("Training5," + FlightGlobals.GetHomeBodyName());
+                    newKerb.ArchiveFlightLog();
+                    newKerb.experience = 64;
+                    newKerb.experienceLevel = 5;
+                    // Hire.Log.Info("KSI :: Level set to 5.");
+                }
                 if (kerExp == false)
                 {
                     newKerb.experience = 9999;
