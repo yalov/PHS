@@ -1,4 +1,15 @@
-﻿0.6.9.1
+0.6.9.2
+	Thanks to @TonkaCrash for this:
+	CustomAstronautComplexUI.cs
+		Changed limit of hires to a single constant, was just set to 10 in various places, but logic assumed more than 10 could be hired at a time
+		
+		Randomized stats on bulkhires. Sliders affect average value of stats, 5% chance of a badass. Veteran and Badass buttons are ignored for bulkhires. 
+		
+		*** Issue *** If bulk slider > 1 badass and veteran buttons should be disabled, but for now they are just ignored by the code.
+	en-us.cfg
+		Fixed grammar in Veteran tooltip.
+
+0.6.9.1
 	Thanks to @TonkaCrash for this:
 		Fixed scaling issue
 
