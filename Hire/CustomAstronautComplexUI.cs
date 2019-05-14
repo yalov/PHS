@@ -159,7 +159,7 @@ namespace Hire
                     newKerb.experienceLevel = 2;
                     // Hire.Log.Info("KSI :: Level set to 2.");
                 }
-                if (ACLevel == 5 || kerExp == false)
+                if (kerExp == false)
                 {
                     newKerb.experience = 9999;
                     newKerb.experienceLevel = 5;
@@ -489,14 +489,17 @@ namespace Hire
                 // If statements for level options
                 if (kerExp == false)
                 {
-                    GUILayout.Label(Localizer.Format("#TRPHire_Level5CareerNoExp"));
+                    if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+                        GUILayout.Label(Localizer.Format("#TRPHire_Level5CareerNoExp"));
+                    else
+                        GUILayout.Label(Localizer.Format("#TRPHire_Level5SandboxOrScience"));
                 }
                 else
                 {
                     if (ACLevel == 0) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsZero); }
-                    if (ACLevel == 0.5) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne); }
-                    if (ACLevel == 1) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo); }
-                    if (ACLevel == 5) { GUILayout.Label(Localizer.Format("#TRPHire_Level5SandboxOrScience")); }
+                    else if (ACLevel == 0.5) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne); }
+                    else if (ACLevel == 1) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo); }
+                    else { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsAll); }
                 }
                 GUILayout.EndVertical();
 
