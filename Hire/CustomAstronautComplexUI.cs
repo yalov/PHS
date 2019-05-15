@@ -143,51 +143,48 @@ namespace Hire
 
                 // Hire.Log.Info("PSH :: Status set to Available, courage and stupidity set, fearless trait set.");
 
-                if (KLevel == 1)
-                {
-                    newKerb.flightLog.AddEntry("Training1," + FlightGlobals.GetHomeBodyName());
-                    newKerb.ArchiveFlightLog();
-                    newKerb.experience = 2;
-                    newKerb.experienceLevel = 1;
-                    // Hire.Log.Info("KSI :: Level set to 1.");
-                }
-                if (KLevel == 2)
-                {
-                    newKerb.flightLog.AddEntry("Training2," + FlightGlobals.GetHomeBodyName());
-                    newKerb.ArchiveFlightLog();
-                    newKerb.experience = 8;
-                    newKerb.experienceLevel = 2;
-                    // Hire.Log.Info("KSI :: Level set to 2.");
-                }
-                if (KLevel == 3)
-                {
-                    newKerb.flightLog.AddEntry("Training3," + FlightGlobals.GetHomeBodyName());
-                    newKerb.ArchiveFlightLog();
-                    newKerb.experience = 16;
-                    newKerb.experienceLevel = 3;
-                    // Hire.Log.Info("KSI :: Level set to 3.");
-                }
-                if (KLevel == 4)
-                {
-                    newKerb.flightLog.AddEntry("Training4," + FlightGlobals.GetHomeBodyName());
-                    newKerb.ArchiveFlightLog();
-                    newKerb.experience = 32;
-                    newKerb.experienceLevel = 4;
-                    // Hire.Log.Info("KSI :: Level set to 4.");
-                }
-                if (KLevel == 5)
-                {
-                    newKerb.flightLog.AddEntry("Training5," + FlightGlobals.GetHomeBodyName());
-                    newKerb.ArchiveFlightLog();
-                    newKerb.experience = 64;
-                    newKerb.experienceLevel = 5;
-                    // Hire.Log.Info("KSI :: Level set to 5.");
-                }
                 if (kerExp == false)
                 {
                     newKerb.experience = 9999;
                     newKerb.experienceLevel = 5;
-                    Hire.Log.Info("KSI :: Level set to 5 - Non-Career Mode default.");
+                    Hire.Log.Info("KSI :: Level set to 5 - Kerbal Experince disabled.");
+                }
+                else switch(KLevel)
+                {
+                    case 1:
+                        newKerb.flightLog.AddEntry("Training1," + FlightGlobals.GetHomeBodyName());
+                        newKerb.ArchiveFlightLog();
+                        newKerb.experience = 2;
+                        newKerb.experienceLevel = 1;
+                        // Hire.Log.Info("KSI :: Level set to 1.");
+                        break;
+                    case 2:
+                        newKerb.flightLog.AddEntry("Training2," + FlightGlobals.GetHomeBodyName());
+                        newKerb.ArchiveFlightLog();
+                        newKerb.experience = 8;
+                        newKerb.experienceLevel = 2;
+                        // Hire.Log.Info("KSI :: Level set to 2.");
+                        break;
+                    case 3:
+                        newKerb.flightLog.AddEntry("Training3," + FlightGlobals.GetHomeBodyName());
+                        newKerb.ArchiveFlightLog();
+                        newKerb.experience = 16;
+                        newKerb.experienceLevel = 3;
+                        // Hire.Log.Info("KSI :: Level set to 3.");
+                        break;
+                    case 4:
+                        newKerb.flightLog.AddEntry("Training4," + FlightGlobals.GetHomeBodyName());
+                        newKerb.ArchiveFlightLog();
+                        newKerb.experience = 32;
+                        newKerb.experienceLevel = 4;
+                        // Hire.Log.Info("KSI :: Level set to 4.");
+                        break;
+                    case 5:
+                        newKerb.flightLog.AddEntry("Training5," + FlightGlobals.GetHomeBodyName());
+                        newKerb.ArchiveFlightLog();
+                        newKerb.experience = 64;
+                        newKerb.experienceLevel = 5;
+                        break;
                 }
                 GameEvents.onKerbalAdded.Fire(newKerb); // old gameevent most likely to be used by other mods
                 GameEvents.onKerbalAddComplete.Fire(newKerb); // new gameevent that seems relevant
