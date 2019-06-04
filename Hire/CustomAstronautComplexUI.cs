@@ -252,11 +252,11 @@ namespace Hire
                 if (KFearless == true && KBulki <= 1) // disable on bulk hires
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef;
 
-                if (KVeteran == true)
+                if (KVeteran == true && KBulki <= 1) // disable on bulk hires
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().veteran_coef;
 
 
-                if (KVeteran == true && KBulki <= 1) // disable on bulk hires
+                if (KGender != 2)
                     cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().gender_coef;
 
                 DCost = 1 + (KDead * 0.1f);
