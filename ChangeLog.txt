@@ -1,4 +1,22 @@
-﻿0.6.9.1
+0.6.9.2
+	If bulk slider > 1, then badass and veteran buttons are disabled;
+
+	Thanks to @TonkaCrash for this:
+	CustomAstronautComplexUI.cs
+		Changed limit of hires to a single constant, was just set to 10 in various places, but logic assumed more than 10 could be hired at a time		
+		Randomized stats on bulkhires. Sliders affect average value of stats, 5% chance of a badass. Veteran and Badass buttons are ignored for bulkhires. 
+			
+	en-us.cfg
+		Fixed grammar in Veteran tooltip.
+
+		Randomize stats on bulk hires
+		Fixed grammar error in Veteran tooltip.
+
+	Thanks to @cake-pit for these:
+		Fix a derp in tooltip
+		Respect KerbalExperienceEnabled setting
+
+0.6.9.1
 	Thanks to @TonkaCrash for this:
 		Fixed scaling issue
 
