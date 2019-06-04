@@ -508,6 +508,12 @@ namespace Hire
                 GUILayout.Label(Stupidity + ":  " + Math.Truncate(KStupidity));
                 KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
 
+                if (KBulki > 1)
+                {
+                    GUI.enabled = false;
+                    KFearless = false;
+                    KVeteran = false;
+                }
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(Localizer.Format("#TRPHire_IsFearless"));
                 KFearless = GUILayout.Toggle(KFearless, Badass);
@@ -518,7 +524,7 @@ namespace Hire
                 KVeteran = GUILayout.Toggle(KVeteran, Veteran);
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
-
+                GUI.enabled = true;
                 // Level selection
                 GUILayout.BeginVertical("box");
                 GUILayout.Label(Localizer.Format("#TRPHire_SelectLevel"));
