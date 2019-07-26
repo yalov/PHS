@@ -1,3 +1,7 @@
+0.6.9.4
+	Added InstallChecker
+	Updated AssemblyVersion.tt
+
 0.6.9.3
 	Fixed logic error on bulk hires related to gender and veteran choices
 
