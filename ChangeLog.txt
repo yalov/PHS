@@ -1,5 +1,8 @@
 ChangeLog
 
+0.6.10.1
+	Moved initialization of basecolor into Awake()
+
 0.6.10
 	Updated for KSP 1.8
 

@@ -62,7 +62,7 @@ namespace Hire
         private GUIContent KMale = new GUIContent(Male, AssetBase.GetTexture("kerbalicon_recruit"), "Male Kerbal");
         private GUIContent KFemale = new GUIContent(Female, AssetBase.GetTexture("kerbalicon_recruit_female"), "Female Kerbal");
         private GUIContent KGRandom = new GUIContent(Random, Localizer.Format("#TRPHire_RandomTooltip"));
-        Color basecolor = GUI.color;
+        Color basecolor; // = GUI.color;
         private float ACLevel = 0;
         private double KDead;
         private double DCost = 1;
@@ -71,6 +71,11 @@ namespace Hire
         private bool hasKredits = true;
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
         private Traits traits = null;
+
+        void Awake()
+        {
+            basecolor = GUI.color;
+        }
 
         public void Initialize(Rect guiRect)
         {
