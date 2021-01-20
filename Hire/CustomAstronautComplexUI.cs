@@ -137,7 +137,7 @@ namespace Hire
                 newKerb.rosterStatus = ProtoCrewMember.RosterStatus.Available;
                 newKerb.experience = 0;
                 newKerb.experienceLevel = 0;
-                if (KBulki > 0) // Bulk hires get random stats
+                if (KBulki > 1) // Bulk hires get random stats
                 {
                     // The equation gives 60% of results within +/-10% of GUI setting
                     newKerb.courage = (float)Math.Min(1, Math.Max(0, (Math.Pow(2 * rand.NextDouble() - 1, 3) / 2) + KCourage / 100));
