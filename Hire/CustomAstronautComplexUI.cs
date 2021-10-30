@@ -74,6 +74,9 @@ namespace Hire
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
         private Traits traits = null;
 
+        private HireSettings settings1 = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>();
+        private HireSettings2 settings2 = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>();
+        private HireSettings3 settings3 = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>();
 
         void Awake()
         {
@@ -240,19 +243,19 @@ namespace Hire
 
 
             double cost;
-            if (HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().KStockCost)
+            if (settings1.KStockCost)
                 cost = GameVariables.Instance.GetRecruitHireCost(HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount());
             else
-                cost = (double)HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().const_cost;
+                cost = (double)settings1.const_cost;
 
             if (KSpecifyQuality)
             {
-                cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().quality_coef;
+                cost *= settings1.quality_coef;
 
                 // Kerbal Quality Cost Modifier
-                double low = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().low_quality;
+                double low = settings1.low_quality;
                 double mid = 1;
-                double high = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().high_quality;
+                double high = settings1.high_quality;
                 double kerbal_quality = (100 - KStupidity + KCourage) / 200;
                 double quality_coef;
 
@@ -271,22 +274,22 @@ namespace Hire
             KBulkDiscount = false;
 
 
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().disableAllModifiers)
+            if (!settings1.disableAllModifiers)
             {
 
                 if (KFearless == true && KBulki <= 1) // disable on bulk hires
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().fearless_coef;
+                    cost *= settings2.fearless_coef;
 
                 if (KVeteran == true && KBulki <= 1) // disable on bulk hires
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().veteran_coef;
+                    cost *= settings2.veteran_coef;
 
 
                 if (KGender != 2)
-                    cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().gender_coef;
+                    cost *= settings2.gender_coef;
 
                 DCost = 1 + (KDead * 0.1f);
                 float difficulty_setting_coef = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
-                double levelup_coef = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings2>().levelup_coef;
+                double levelup_coef = settings2.levelup_coef;
 
                 cost *= DCost * difficulty_setting_coef * KBulki * (1 + levelup_coef * KLevel);
 
@@ -295,12 +298,12 @@ namespace Hire
                 //  discounts for bulk purchases
                 if (KBulki >= 10)
                 {
-                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().bulk_discount2 / 100;
+                    KDiscount += settings3.bulk_discount2 / 100;
                     KBulkDiscount = true;
                 }
                 else if (KBulki >= 5)
                 {
-                    KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().bulk_discount1 / 100;
+                    KDiscount += settings3.bulk_discount1 / 100;
                     KBulkDiscount = true;
                 }
                 //  discounts: BlackMunday is day of eclipse, NewYear is last days of year
@@ -335,7 +338,7 @@ namespace Hire
                     {
                         Hire.Log.Info("Eclipse, eclipseToday: " + Orbital.eclipseToday);
                         KBlackMunday = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
+                        KDiscount += settings3.black_discount / 100;
                     }
                     else
                         Hire.Log.Info("Not Eclipse, eclipseToday: " + Orbital.eclipseToday);
@@ -343,7 +346,7 @@ namespace Hire
                     if (Orbital.eclipseToday)
                     {
                         KBlackMundayDiscount = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
+                        KDiscount += settings3.black_discount / 100;
                     }
 #endif
 
@@ -353,12 +356,12 @@ namespace Hire
                     if (days_in_year - day_of_year < 2 || day_of_year < 3)
                     {
                         KNewYearDiscount = true;
-                        KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().new_year_discount / 100;
+                        KDiscount += settings3.new_year_discount / 100;
                     }
                 }
-                if (KDiscount > HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount / 100)
+                if (KDiscount > settings3.max_discount / 100)
                 {
-                    KDiscount = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount / 100;
+                    KDiscount = settings3.max_discount / 100;
                     KDiscountOverFlow = true;
                 }
 
@@ -621,10 +624,10 @@ namespace Hire
 
                     if (KDiscount != 0)
                     {
-                        string MaxDiscountText = Localizer.Format("#TRPHire_MaxDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount) + "\n";
-                        string NewYearText = Localizer.Format("#TRPHire_NewYear", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().new_year_discount) + "\n";
-                        string BlackMundayText = Localizer.Format("#TRPHire_BlackMunday", rock, HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount) + "\n";
-                        string BulkDiscountText = Localizer.Format("#TRPHire_BulkDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount) + "\n";
+                        string MaxDiscountText = Localizer.Format("#TRPHire_MaxDiscount", settings3.max_discount) + "\n";
+                        string NewYearText = Localizer.Format("#TRPHire_NewYear", settings3.new_year_discount) + "\n";
+                        string BlackMundayText = Localizer.Format("#TRPHire_BlackMunday", rock, settings3.black_discount) + "\n";
+                        string BulkDiscountText = Localizer.Format("#TRPHire_BulkDiscount", settings3.black_discount) + "\n";
                         string YourDiscountText = Localizer.Format("#TRPHire_YourDiscount", KDiscount * 100) + "\n";
 
                         int discountCount = 0;
