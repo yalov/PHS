@@ -36,7 +36,8 @@ namespace Hire
         private static bool KDiscountOverFlow = false;
         private static bool KBlackMundayDiscount = false;
         private static bool KNewYearDiscount = false;
-        private static bool KBulkDiscount = false;
+        private static bool KBulkDiscount1 = false;
+        private static bool KBulkDiscount2 = false;
         private static int KCareer = 0;
 
         private static int KLevel = 0;
@@ -271,7 +272,8 @@ namespace Hire
             KDiscountOverFlow = false;
             KBlackMundayDiscount = false;
             KNewYearDiscount = false;
-            KBulkDiscount = false;
+            KBulkDiscount1 = false;
+            KBulkDiscount2 = false;
 
 
             if (!settings1.disableAllModifiers)
@@ -299,12 +301,12 @@ namespace Hire
                 if (KBulki >= 10)
                 {
                     KDiscount += settings3.bulk_discount2 / 100;
-                    KBulkDiscount = true;
+                    KBulkDiscount2 = true;
                 }
                 else if (KBulki >= 5)
                 {
                     KDiscount += settings3.bulk_discount1 / 100;
-                    KBulkDiscount = true;
+                    KBulkDiscount1 = true;
                 }
                 //  discounts: BlackMunday is day of eclipse, NewYear is last days of year
                 if (Planetarium.fetch != null)
@@ -627,14 +629,16 @@ namespace Hire
                         string MaxDiscountText = Localizer.Format("#TRPHire_MaxDiscount", settings3.max_discount) + "\n";
                         string NewYearText = Localizer.Format("#TRPHire_NewYear", settings3.new_year_discount) + "\n";
                         string BlackMundayText = Localizer.Format("#TRPHire_BlackMunday", rock, settings3.black_discount) + "\n";
-                        string BulkDiscountText = Localizer.Format("#TRPHire_BulkDiscount", settings3.black_discount) + "\n";
+                        string BulkDiscountText1 = Localizer.Format("#TRPHire_BulkDiscount", settings3.bulk_discount1) + "\n";
+                        string BulkDiscountText2 = Localizer.Format("#TRPHire_BulkDiscount", settings3.bulk_discount2) + "\n";
                         string YourDiscountText = Localizer.Format("#TRPHire_YourDiscount", KDiscount * 100) + "\n";
 
                         int discountCount = 0;
 
                         if (KNewYearDiscount)     { msg += NewYearText;      discountCount++; }
                         if (KBlackMundayDiscount) { msg += BlackMundayText;  discountCount++; }
-                        if (KBulkDiscount)        { msg += BulkDiscountText; discountCount++; }
+                        if (KBulkDiscount1)        { msg += BulkDiscountText1; discountCount++; }
+                        if (KBulkDiscount2) { msg += BulkDiscountText2; discountCount++; }
 
                         if (KDiscountOverFlow)
                             msg += MaxDiscountText;
