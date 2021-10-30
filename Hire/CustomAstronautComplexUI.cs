@@ -34,8 +34,9 @@ namespace Hire
 
         private static double KDiscount = 0;
         private static bool KDiscountOverFlow = false;
-        private static bool KBlackMunday = false;
-        private static bool KNewYear = false;
+        private static bool KBlackMundayDiscount = false;
+        private static bool KNewYearDiscount = false;
+        private static bool KBulkDiscount = false;
         private static int KCareer = 0;
 
         private static int KLevel = 0;
@@ -72,6 +73,7 @@ namespace Hire
         private bool hasKredits = true;
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
         private Traits traits = null;
+
 
         void Awake()
         {
@@ -264,8 +266,10 @@ namespace Hire
 
             KDiscount = 0;
             KDiscountOverFlow = false;
-            KBlackMunday = false;
-            KNewYear = false;
+            KBlackMundayDiscount = false;
+            KNewYearDiscount = false;
+            KBulkDiscount = false;
+
 
             if (!HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().disableAllModifiers)
             {
@@ -286,12 +290,19 @@ namespace Hire
 
                 cost *= DCost * difficulty_setting_coef * KBulki * (1 + levelup_coef * KLevel);
 
+                // DISCOUNTS
+
                 //  discounts for bulk purchases
                 if (KBulki >= 10)
+                {
                     KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().bulk_discount2 / 100;
+                    KBulkDiscount = true;
+                }
                 else if (KBulki >= 5)
+                {
                     KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().bulk_discount1 / 100;
-
+                    KBulkDiscount = true;
+                }
                 //  discounts: BlackMunday is day of eclipse, NewYear is last days of year
                 if (Planetarium.fetch != null)
                 {
@@ -331,7 +342,7 @@ namespace Hire
 #else
                     if (Orbital.eclipseToday)
                     {
-                        KBlackMunday = true;
+                        KBlackMundayDiscount = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
                     }
 #endif
@@ -341,7 +352,7 @@ namespace Hire
                     // 2 days on the start and 2 days on the end of the year
                     if (days_in_year - day_of_year < 2 || day_of_year < 3)
                     {
-                        KNewYear = true;
+                        KNewYearDiscount = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().new_year_discount / 100;
                     }
                 }
@@ -606,15 +617,33 @@ namespace Hire
                         rock = Localizer.Format("<<1>>", rock);
                     }
 
-                    string MaxDiscount = Localizer.Format("#TRPHire_MaxDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount) + "\n";
-                    string NewYear = Localizer.Format("#TRPHire_NewYear") + " ";
-                    string BlackMunday = Localizer.Format("#TRPHire_BlackMunday", rock) + " ";
-                    string YourDiscount = Localizer.Format("#TRPHire_YourDiscount", KDiscount * 100) + "\n";
-                    string TotalCost = Localizer.Format("#TRPHire_TotalCost", cost);
+                    string msg = "";
 
-                    string msg = (KDiscountOverFlow ? MaxDiscount : "")
-                            + (KDiscount != 0 ? (KNewYear ? NewYear : "") + (KBlackMunday ? BlackMunday : "") + YourDiscount : "")
-                            + TotalCost;
+                    if (KDiscount != 0)
+                    {
+                        string MaxDiscountText = Localizer.Format("#TRPHire_MaxDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount) + "\n";
+                        string NewYearText = Localizer.Format("#TRPHire_NewYear", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().new_year_discount) + "\n";
+                        string BlackMundayText = Localizer.Format("#TRPHire_BlackMunday", rock, HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount) + "\n";
+                        string BulkDiscountText = Localizer.Format("#TRPHire_BulkDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount) + "\n";
+                        string YourDiscountText = Localizer.Format("#TRPHire_YourDiscount", KDiscount * 100) + "\n";
+
+                        int discountCount = 0;
+
+                        if (KNewYearDiscount)     { msg += NewYearText;      discountCount++; }
+                        if (KBlackMundayDiscount) { msg += BlackMundayText;  discountCount++; }
+                        if (KBulkDiscount)        { msg += BulkDiscountText; discountCount++; }
+
+                        if (KDiscountOverFlow)
+                            msg += MaxDiscountText;
+
+                        if (discountCount > 1)
+                            msg += YourDiscountText;
+                    }
+
+                    string TotalCostText = Localizer.Format("#TRPHire_TotalCost", cost);
+                    msg += TotalCostText;
+
+
                     if (cost <= Funding.Instance.Funds)
                     {
                         GUILayout.Label(msg, HighLogic.Skin.textField);
