@@ -28,6 +28,7 @@ namespace Hire
         private int crewWeCanHire = MAX_HIRE_COUNT;
         private static float KStupidity = 50;
         private static float KCourage = 50;
+        private static bool KSpecifyQuality = true;
         private static bool KFearless = false;
         private static bool KVeteran = false;
 
@@ -40,20 +41,20 @@ namespace Hire
         private static int KLevel = 0;
         private float Krep = Reputation.CurrentRep;
         private static string Level = Localizer.Format("#autoLOC_6002246");
-        
+
         private string[] KLevelStringsZero = new string[1] { Level + " 0" };
         private string[] KLevelStringsOne = new string[2] { Level + " 0", Level + " 1" };
         private string[] KLevelStringsTwo = new string[3] { Level + " 0", Level + " 1", Level + " 2" };
         private string[] KLevelStringsAll = new string[6] { Level + " 0", Level + " 1", Level + " 2", Level + " 3", Level + " 4", Level + " 5" };
 
-        private string[,] KNames = new string[3,MAX_HIRE_COUNT];
+        private string[,] KNames = new string[3, MAX_HIRE_COUNT];
         private ProtoCrewMember.Gender[] KNames2Gender = new ProtoCrewMember.Gender[MAX_HIRE_COUNT];
-        
+
         private static string Male = Localizer.Format("#autoLOC_900434");
         private static string Female = Localizer.Format("#autoLOC_900444");
         private static string Random = Localizer.Format("#autoLOC_900432");
 
-        private static string Courage = Localizer.Format("#autoLOC_900436");      
+        private static string Courage = Localizer.Format("#autoLOC_900436");
         private static string Stupidity = Localizer.Format("#autoLOC_900438");
         private static string Badass = Localizer.Format("#autoLOC_900440");
         private static string Veteran = Localizer.Format("#autoLOC_900437");
@@ -80,12 +81,12 @@ namespace Hire
         public void Initialize(Rect guiRect)
         {
             // the supplied rect will have the UI scalar already factored in
-            var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width , guiRect.height);
+            var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width, guiRect.height);
 
             _areaRect = correctedRect;
 
             _guiPivot = new Vector2(_areaRect.x, _areaRect.y);
-           
+
             //var applicants = HighLogic.CurrentGame.CrewRoster.Applicants.ToList();
             var rand = new System.Random();
             for (int i = 0; i < MAX_HIRE_COUNT; i++)
@@ -100,13 +101,13 @@ namespace Hire
             enabled = true;
 
             traits = new Traits();
-   
+
         }
 
         private void kHire()
         {
             System.Random rand = new System.Random();
-            
+
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 double myFunds = Funding.Instance.Funds;
@@ -140,8 +141,17 @@ namespace Hire
                 if (KBulki > 1) // Bulk hires get random stats
                 {
                     // The equation gives 60% of results within +/-10% of GUI setting
-                    newKerb.courage = (float)Math.Min(1, Math.Max(0, (Math.Pow(2 * rand.NextDouble() - 1, 3) / 2) + KCourage / 100));
-                    newKerb.stupidity = (float)Math.Min(1, Math.Max(0, (Math.Pow(2 * rand.NextDouble() - 1, 3) / 2) + KStupidity / 100));
+                    if (KSpecifyQuality)
+                    {
+                        newKerb.courage = (float)Math.Min(1, Math.Max(0, (Math.Pow(2 * rand.NextDouble() - 1, 3) / 2) + KCourage / 100));
+                        newKerb.stupidity = (float)Math.Min(1, Math.Max(0, (Math.Pow(2 * rand.NextDouble() - 1, 3) / 2) + KStupidity / 100));
+                    }
+                    else
+                    {
+                        newKerb.courage = (float)rand.NextDouble();
+                        newKerb.stupidity = (float)rand.NextDouble();
+                    }
+
                     // 5% chance of Badass
                     newKerb.isBadass = rand.NextDouble() > .95;
                     // No chance of vets in bulk hires.
@@ -151,7 +161,7 @@ namespace Hire
                 {
                     newKerb.courage = KCourage / 100;
                     newKerb.stupidity = KStupidity / 100;
-                    if (KFearless) 
+                    if (KFearless)
                     {
                         newKerb.isBadass = true;
                     }
@@ -170,53 +180,53 @@ namespace Hire
                     newKerb.experienceLevel = 5;
                     Hire.Log.Info("KSI :: Level set to 5 - Kerbal Experince disabled.");
                 }
-                else switch(KLevel)
-                {
-                    case 1:
-                        newKerb.flightLog.AddEntry("Training1," + FlightGlobals.GetHomeBodyName());
-                        newKerb.ArchiveFlightLog();
-                        newKerb.experience = 2;
-                        newKerb.experienceLevel = 1;
-                        // Hire.Log.Info("KSI :: Level set to 1.");
-                        break;
-                    case 2:
-                        newKerb.flightLog.AddEntry("Training2," + FlightGlobals.GetHomeBodyName());
-                        newKerb.ArchiveFlightLog();
-                        newKerb.experience = 8;
-                        newKerb.experienceLevel = 2;
-                        // Hire.Log.Info("KSI :: Level set to 2.");
-                        break;
-                    case 3:
-                        newKerb.flightLog.AddEntry("Training3," + FlightGlobals.GetHomeBodyName());
-                        newKerb.ArchiveFlightLog();
-                        newKerb.experience = 16;
-                        newKerb.experienceLevel = 3;
-                        // Hire.Log.Info("KSI :: Level set to 3.");
-                        break;
-                    case 4:
-                        newKerb.flightLog.AddEntry("Training4," + FlightGlobals.GetHomeBodyName());
-                        newKerb.ArchiveFlightLog();
-                        newKerb.experience = 32;
-                        newKerb.experienceLevel = 4;
-                        // Hire.Log.Info("KSI :: Level set to 4.");
-                        break;
-                    case 5:
-                        newKerb.flightLog.AddEntry("Training5," + FlightGlobals.GetHomeBodyName());
-                        newKerb.ArchiveFlightLog();
-                        newKerb.experience = 64;
-                        newKerb.experienceLevel = 5;
-                        break;
-                }
+                else switch (KLevel)
+                    {
+                        case 1:
+                            newKerb.flightLog.AddEntry("Training1," + FlightGlobals.GetHomeBodyName());
+                            newKerb.ArchiveFlightLog();
+                            newKerb.experience = 2;
+                            newKerb.experienceLevel = 1;
+                            // Hire.Log.Info("KSI :: Level set to 1.");
+                            break;
+                        case 2:
+                            newKerb.flightLog.AddEntry("Training2," + FlightGlobals.GetHomeBodyName());
+                            newKerb.ArchiveFlightLog();
+                            newKerb.experience = 8;
+                            newKerb.experienceLevel = 2;
+                            // Hire.Log.Info("KSI :: Level set to 2.");
+                            break;
+                        case 3:
+                            newKerb.flightLog.AddEntry("Training3," + FlightGlobals.GetHomeBodyName());
+                            newKerb.ArchiveFlightLog();
+                            newKerb.experience = 16;
+                            newKerb.experienceLevel = 3;
+                            // Hire.Log.Info("KSI :: Level set to 3.");
+                            break;
+                        case 4:
+                            newKerb.flightLog.AddEntry("Training4," + FlightGlobals.GetHomeBodyName());
+                            newKerb.ArchiveFlightLog();
+                            newKerb.experience = 32;
+                            newKerb.experienceLevel = 4;
+                            // Hire.Log.Info("KSI :: Level set to 4.");
+                            break;
+                        case 5:
+                            newKerb.flightLog.AddEntry("Training5," + FlightGlobals.GetHomeBodyName());
+                            newKerb.ArchiveFlightLog();
+                            newKerb.experience = 64;
+                            newKerb.experienceLevel = 5;
+                            break;
+                    }
                 GameEvents.onKerbalAdded.Fire(newKerb); // old gameevent most likely to be used by other mods
                 GameEvents.onKerbalAddComplete.Fire(newKerb); // new gameevent that seems relevant
             }
             // Refreshes the AC so that new kerbal shows on the available roster.
             Hire.Log.Info("PSH :: Hiring Function Completed.");
-           
+
 
             GameEvents.onGUIAstronautComplexDespawn.Fire();
             GameEvents.onGUIAstronautComplexSpawn.Fire();
-            
+
 
         }
 
@@ -225,10 +235,7 @@ namespace Hire
         {
             dCheck();
 
-            // Kerbal Quality Cost Modifier
-            double low = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().low_quality;
-            double mid = 1;
-            double high = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().high_quality;
+
 
             double cost;
             if (HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().KStockCost)
@@ -236,15 +243,24 @@ namespace Hire
             else
                 cost = (double)HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().const_cost;
 
-            double kerbal_quality = (100 - KStupidity + KCourage) / 200;
-            double quality_coef;
+            if (KSpecifyQuality)
+            {
+                cost *= HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().quality_coef;
 
-            if (kerbal_quality < 0.5)
-                quality_coef = 2 * (mid - low) * kerbal_quality + low;
-            else
-                quality_coef = 2 * (high - mid) * kerbal_quality - high + 2 * mid;
+                // Kerbal Quality Cost Modifier
+                double low = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().low_quality;
+                double mid = 1;
+                double high = HighLogic.CurrentGame.Parameters.CustomParams<HireSettings>().high_quality;
+                double kerbal_quality = (100 - KStupidity + KCourage) / 200;
+                double quality_coef;
 
-            cost *= quality_coef;
+                if (kerbal_quality < 0.5)
+                    quality_coef = 2 * (mid - low) * kerbal_quality + low;
+                else
+                    quality_coef = 2 * (high - mid) * kerbal_quality - high + 2 * mid;
+
+                cost *= quality_coef;
+            }
 
             KDiscount = 0;
             KDiscountOverFlow = false;
@@ -280,6 +296,7 @@ namespace Hire
                 if (Planetarium.fetch != null)
                 {
                     double seconds = Planetarium.GetUniversalTime();
+
                     int sec_of_year = (int)seconds % KSPUtil.dateTimeFormatter.Year;
                     int day_of_year = sec_of_year / KSPUtil.dateTimeFormatter.Day + 1;
 #if false
@@ -316,10 +333,13 @@ namespace Hire
                     {
                         KBlackMunday = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().black_discount / 100;
-                    }               
+                    }
 #endif
+
+
                     int days_in_year = KSPUtil.dateTimeFormatter.Year / KSPUtil.dateTimeFormatter.Day;
-                    if (days_in_year - day_of_year < 3)
+                    // 2 days on the start and 2 days on the end of the year
+                    if (days_in_year - day_of_year < 2 || day_of_year < 3)
                     {
                         KNewYear = true;
                         KDiscount += HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().new_year_discount / 100;
@@ -361,7 +381,7 @@ namespace Hire
         }
 
 
-        private string hireStatus( out bool hTest)
+        private string hireStatus(out bool hTest)
         {
 
             string bText = Localizer.Format("#TRPHire_Button_Hire");
@@ -371,7 +391,7 @@ namespace Hire
                 double kredits = Funding.Instance.Funds;
                 if (costMath() > kredits)
                 {
-                    bText = Localizer.Format("#TRPHire_Button_NotEnoughFunds"); 
+                    bText = Localizer.Format("#TRPHire_Button_NotEnoughFunds");
                     hTest = false;
                 }
                 else if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
@@ -447,7 +467,7 @@ namespace Hire
 
             GUILayout.BeginArea(_areaRect);
             {
-                GUILayout.Label(Localizer.Format("#TRPHire_Title")); 
+                GUILayout.Label(Localizer.Format("#TRPHire_Title"));
 
                 // Gender selection 
                 GUILayout.BeginHorizontal("box");
@@ -474,7 +494,7 @@ namespace Hire
 
 
                 GUI.contentColor = basecolor;
-                GUILayout.EndVertical();
+                
 
                 if (KBulki > 0)
                 {
@@ -505,13 +525,31 @@ namespace Hire
                     GUILayout.EndHorizontal();
                 }
 
+                GUILayout.EndVertical();
 
                 // Courage Brains and BadS flag selections
                 GUILayout.BeginVertical("box");
-                GUILayout.Label(Courage + ":  " + Math.Truncate(KCourage));
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(Localizer.Format("#TRPHire_IsQuality"));
+                KSpecifyQuality = GUILayout.Toggle(KSpecifyQuality, Localizer.Format("#TRPHire_Quality"));
+                GUILayout.EndHorizontal();
+
+                if (!KSpecifyQuality)
+                    GUI.enabled = false;
+
+                string courage_label = Courage + ":  " + (KSpecifyQuality ? KCourage.ToString("F0") :
+                    (KBulki > 1 ? Localizer.Format("#TRPHire_RandomForEach") : Localizer.Format("#TRPHire_Random")));
+                GUILayout.Label(courage_label);
                 KCourage = GUILayout.HorizontalSlider(KCourage, 0, 100);
-                GUILayout.Label(Stupidity + ":  " + Math.Truncate(KStupidity));
+
+                string stupidity_label = Stupidity + ":  " + (KSpecifyQuality ? KStupidity.ToString("F0") :
+                    (KBulki > 1 ? Localizer.Format("#TRPHire_RandomForEach") : Localizer.Format("#TRPHire_Random")));
+                GUILayout.Label(stupidity_label);
                 KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
+                GUI.enabled = true;
+
+                GUILayout.EndVertical();
 
                 if (KBulki > 1)
                 {
@@ -519,6 +557,8 @@ namespace Hire
                     KFearless = false;
                     KVeteran = false;
                 }
+                GUILayout.BeginVertical("box");
+    
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(Localizer.Format("#TRPHire_IsFearless"));
                 KFearless = GUILayout.Toggle(KFearless, Badass);
@@ -529,6 +569,7 @@ namespace Hire
                 KVeteran = GUILayout.Toggle(KVeteran, Veteran);
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
+
                 GUI.enabled = true;
                 // Level selection
                 GUILayout.BeginVertical("box");
@@ -560,16 +601,16 @@ namespace Hire
                     //GUILayout.FlexibleSpace();
                     string rock = "";
                     if (Orbital.eclipseToday != null)
-                        rock = Orbital.eclipseToday.displayName;
-                    if (rock != "")
-                        if (rock.Substring(rock.Length - 2, 1) == "^")
-                            rock = rock.Substring(0, rock.Length - 2);
+                    {
+                        rock = Orbital.eclipseToday.displayName.Split().Last();
+                        rock = Localizer.Format("<<1>>", rock);
+                    }
 
-                    string MaxDiscount  = Localizer.Format("#TRPHire_MaxDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount) + "\n";
-                    string NewYear      = Localizer.Format("#TRPHire_NewYear") + " ";
-                    string BlackMunday  = Localizer.Format("#TRPHire_BlackMunday", rock) + " ";
+                    string MaxDiscount = Localizer.Format("#TRPHire_MaxDiscount", HighLogic.CurrentGame.Parameters.CustomParams<HireSettings3>().max_discount) + "\n";
+                    string NewYear = Localizer.Format("#TRPHire_NewYear") + " ";
+                    string BlackMunday = Localizer.Format("#TRPHire_BlackMunday", rock) + " ";
                     string YourDiscount = Localizer.Format("#TRPHire_YourDiscount", KDiscount * 100) + "\n";
-                    string TotalCost    = Localizer.Format("#TRPHire_TotalCost", cost);
+                    string TotalCost = Localizer.Format("#TRPHire_TotalCost", cost);
 
                     string msg = (KDiscountOverFlow ? MaxDiscount : "")
                             + (KDiscount != 0 ? (KNewYear ? NewYear : "") + (KBlackMunday ? BlackMunday : "") + YourDiscount : "")

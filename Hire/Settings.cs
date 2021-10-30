@@ -41,6 +41,10 @@ namespace Hire
             toolTip = "#TRPHire_Settings_DisableAdvancedTooltip")]
         public bool disableAllModifiers = false;
 
+        [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_Quality", minValue = 1f, maxValue = 2f, displayFormat = "N2",
+toolTip = "#TRPHire_Settings_QualityTooltip")]
+        public double quality_coef = 1.25f;
+
         [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_LowQuality", minValue = 0.25f, maxValue = 1f, displayFormat = "N2",
             toolTip = "#TRPHire_Settings_LowQualityTooltip")]
         public double low_quality = 0.5f;
