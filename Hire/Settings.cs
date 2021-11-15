@@ -179,11 +179,11 @@ toolTip = "#TRPHire_Settings_QualityTooltip")]
 
         [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_Black", minValue = 0f, maxValue = 40f,
             toolTip = "#TRPHire_Settings_BlackTooltip")]
-        public double black_discount = 10f;
+        public double black_discount = 15f;
 
         [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_NewYear", minValue = 0f, maxValue = 80f,
             toolTip = "#TRPHire_Settings_NewYearTooltip")]
-        public double new_year_discount = 50f;
+        public double new_year_discount = 40f;
 
         [GameParameters.CustomFloatParameterUI("#TRPHire_Settings_Maximum", minValue = 25f, maxValue = 90f,
             toolTip = "#TRPHire_Settings_MaximumTooltip")]
